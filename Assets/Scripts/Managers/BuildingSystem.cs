@@ -1,18 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
+using Cyan;
 
-public class BuildingSystem : MonoBehaviour
+namespace Managers
 {
-    // Start is called before the first frame update
-    void Start()
+    public class BuildingSystem : MonoBehaviour
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        [SerializeField, RequireNotNull] Tilemap blockMap;
+        [SerializeField, RequireNotNull] Tilemap ghostMap;
     }
 }
