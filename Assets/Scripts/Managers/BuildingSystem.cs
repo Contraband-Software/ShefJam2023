@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,7 +39,7 @@ namespace Managers
 
         private void Update()
         {
-            var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mouseWorldPos.z = 0f;
 
             UpdateGhostBlock(mouseWorldPos);
@@ -52,6 +53,17 @@ namespace Managers
             } else if (Input.GetMouseButtonDown(2))
             {
                 DestroyBlock(mouseWorldPos);
+                //Vector3Int tile = tileMapGrid.WorldToCell(mouseWorldPos);
+                //Vector3Int up = tile + new Vector3Int(0, 1, 0);
+                //Vector3Int down = tile - new Vector3Int(0, 1, 0);
+                //Vector3Int left = tile - new Vector3Int(1, 0, 0);
+                //Vector3Int right = tile + new Vector3Int(1, 0, 0);
+                //Debug.Log(
+                //    "up: " + blockMap.GetTile<TileBase>(up)?.name + " " +
+                //    "down: " + blockMap.GetTile<TileBase>(down)?.name + " " +
+                //    "left: " + blockMap.GetTile<TileBase>(left)?.name + " " +
+                //    "right: " + blockMap.GetTile<TileBase>(right)?.name
+                //);
             }
         }
         #endregion
@@ -85,6 +97,57 @@ namespace Managers
             }
 
             throw new ArgumentException("Tile type does not have an associated reference");
+        }
+
+        private void DestroyLogic(Vector3Int tile)
+        {
+            if (blockMap.GetTile<TileBase>(tile + new Vector3Int(0, 1, 0)) &&
+                blockMap.GetTile<TileBase>(tile - new Vector3Int(0, 1, 0))) 
+            {
+                ExecuteDestroy(tile + new Vector3Int(0, 1, 0), tile - new Vector3Int(0, 1, 0));
+            }
+            else if (blockMap.GetTile<TileBase>(tile + new Vector3Int(1, 0, 0)) &&
+                blockMap.GetTile<TileBase>(tile - new Vector3Int(1, 0, 0)))
+            {
+                ExecuteDestroy(tile + new Vector3Int(1, 0, 0), tile - new Vector3Int(1, 0, 0));
+            }
+            else if (blockMap.GetTile<TileBase>(tile + new Vector3Int(0, 1, 0)) &&
+                     blockMap.GetTile<TileBase>(tile - new Vector3Int(1, 0, 0))
+            )
+            {
+                ExecuteDestroy(tile + new Vector3Int(0, 1, 0), tile - new Vector3Int(1, 0, 0));
+            }
+            else if (blockMap.GetTile<TileBase>(tile + new Vector3Int(0, 1, 0)) &&
+                     blockMap.GetTile<TileBase>(tile + new Vector3Int(1, 0, 0))
+            )
+            {
+                ExecuteDestroy(tile + new Vector3Int(0, 1, 0), tile + new Vector3Int(1, 0, 0));
+            }
+            else if (blockMap.GetTile<TileBase>(tile - new Vector3Int(0, 1, 0)) &&
+                     blockMap.GetTile<TileBase>(tile + new Vector3Int(1, 0, 0))
+            )
+            {
+                ExecuteDestroy(tile - new Vector3Int(0, 1, 0), tile + new Vector3Int(1, 0, 0));
+            }
+            else if (blockMap.GetTile<TileBase>(tile - new Vector3Int(0, 1, 0)) &&
+                     blockMap.GetTile<TileBase>(tile - new Vector3Int(1, 0, 0))
+            )
+            {
+                ExecuteDestroy(tile - new Vector3Int(0, 1, 0), tile - new Vector3Int(1, 0, 0));
+            }
+        }
+
+        private void ExecuteDestroy(Vector3Int tile1, Vector3Int tile2)
+        {
+            TileMapSplitCounter splitCounter = new TileMapSplitCounter(blockMap, tile1, tile2);
+            List<Vector3Int> tilesToDestroy = splitCounter.Resolve();
+            if (tilesToDestroy != null)
+            {
+                foreach (Vector3Int tile3 in tilesToDestroy)
+                {
+                    blockMap.SetTile(tile3, null);
+                }
+            }
         }
         #endregion
 
@@ -123,17 +186,11 @@ namespace Managers
         /// Destroys a block at a coordinate if there is one present
         /// </summary>
         /// <param name="worldPosition"></param>
-        public bool DestroyBlock(Vector2 worldPosition)
+        public void DestroyBlock(Vector2 worldPosition)
         {
             Vector3Int tilePos = tileMapGrid.WorldToCell(worldPosition);
-            bool wasPresent = IsTileOccupied(tilePos);
             blockMap.SetTile(tilePos, null);
-
-            //flood fill breaking here
-
-
-
-            return wasPresent;
+            DestroyLogic(tilePos);
         }
         #endregion
     }
