@@ -1,0 +1,12 @@
+{
+    "name": "software.contraband.cyanci",
+    "version": "1.0.1",
+    "displayName": "CyanCI For Unity",
+    "description": "A tiny simple CI pipeline for Unity.",
+    "unity": "2021.3",
+    "author": {
+        "name": "Samuel Taseff",
+        "email": "samtaseff@gmail.com",
+        "url": "https://cyanseraph.net"
+    }
+}
