@@ -1,0 +1,16 @@
+{
+    "name": "net.cyanseraph.unityutilities.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:27d8478807ef9df42b2eed3526736de0"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
