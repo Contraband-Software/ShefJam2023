@@ -12,16 +12,20 @@ namespace Managers
         #region WASD_INPUT_EVENTS
         public class WASD_MoveEventType : UnityEvent<InputAction.CallbackContext> { }
         public class WASD_JumpEventType : UnityEvent<InputAction.CallbackContext> { }
+        public class WASD_InteractEventType : UnityEvent<InputAction.CallbackContext> { }
 
         public WASD_MoveEventType WASD_MoveEvent = new WASD_MoveEventType();
         public WASD_MoveEventType WASD_JumpEvent = new WASD_MoveEventType();
+        public WASD_InteractEventType WASD_InteractEvent = new WASD_InteractEventType();
         #endregion
 
         #region ARROWS_INPUT_EVENTS
         public class ARROWS_MoveEventType : UnityEvent<InputAction.CallbackContext> { }
         public class ARROWS_JumpEventType : UnityEvent<InputAction.CallbackContext> { }
-        public WASD_MoveEventType ARROWS_MoveEvent = new WASD_MoveEventType();
-        public WASD_MoveEventType ARROWS_JumpEvent = new WASD_MoveEventType();
+        public class ARROWS_InteractEventType : UnityEvent<InputAction.CallbackContext> { }
+        public ARROWS_MoveEventType ARROWS_MoveEvent = new ARROWS_MoveEventType();
+        public ARROWS_MoveEventType ARROWS_JumpEvent = new ARROWS_MoveEventType();
+        public ARROWS_InteractEventType ARROWS_InteractEvent = new ARROWS_InteractEventType();
         #endregion
 
 
@@ -50,6 +54,11 @@ namespace Managers
         {
             WASD_JumpEvent.Invoke(context);
         }
+
+        public void InteractWASD(InputAction.CallbackContext context)
+        {
+            WASD_InteractEvent.Invoke(context);
+        }
         #endregion
 
         #region ARROWS_PLAYER_CONTROLS
@@ -60,6 +69,11 @@ namespace Managers
         public void JumpARROWS(InputAction.CallbackContext context)
         {
             ARROWS_JumpEvent.Invoke(context);
+        }
+
+        public void InteractARROWS(InputAction.CallbackContext context)
+        {
+            ARROWS_InteractEvent.Invoke(context);
         }
         #endregion
     }

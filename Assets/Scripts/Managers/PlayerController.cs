@@ -16,6 +16,10 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
+    #region ATTRIBUTES
+    private List<InteractableBase> InteractablesInRange = new List<InteractableBase>();
+    #endregion
+
     #region SETTINGS_VARIABLES
 
     private enum PlayerControlType { WASD, ARROWS };
@@ -54,6 +58,7 @@ public class PlayerController : MonoBehaviour
     {
         InputHandler.Instance.WASD_MoveEvent.AddListener(Move);
         InputHandler.Instance.WASD_JumpEvent.AddListener(Jump);
+        InputHandler.Instance.WASD_InteractEvent.AddListener(Interact);
     }
     /// <summary>
     /// Subscribes its controls to the ARROWS Events of the InputHandler
@@ -62,6 +67,7 @@ public class PlayerController : MonoBehaviour
     {
         InputHandler.Instance.ARROWS_MoveEvent.AddListener(Move);
         InputHandler.Instance.ARROWS_JumpEvent.AddListener(Jump);
+        InputHandler.Instance.ARROWS_InteractEvent.AddListener(Interact);
     }
     #endregion
 
@@ -84,9 +90,72 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void Interact(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            InteractWithNearestObject();
+        }
+    }
+
     private bool IsGrounded()
     {
         return Physics2D.OverlapCapsule(groundCheck.position, new Vector2(1f, 0.1f), CapsuleDirection2D.Horizontal, 0, groundLayer);   
     }
+    #endregion
+
+    #region INTERACTION
+    /// <summary>
+    /// On Entering an objects range collider, add it to the interactable objects in range
+    /// </summary>
+    /// <param name="collision"></param>
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.transform.root.CompareTag("InteractableObject"))
+        {
+            InteractablesInRange.Add(collision.transform.root.GetComponent<InteractableBase>());
+        }
+    }
+    /// <summary>
+    /// On Exiting an objects range collider, remove it from interactable objects in range
+    /// </summary>
+    /// <param name="collision"></param>
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.transform.root.CompareTag("InteractableObject"))
+        {
+            InteractablesInRange.Remove(collision.transform.root.GetComponent<InteractableBase>());
+        }
+    }
+
+    /// <summary>
+    /// Calculates the object that is nearest to the player and interacts with it
+    /// </summary>
+    private void InteractWithNearestObject()
+    {
+        //dont try interact if none in range
+        if(InteractablesInRange.Count == 0)
+        {
+            return;
+        }
+
+        //calculate closest interactable
+        float nearestDist = Mathf.Infinity;
+        InteractableBase nearestObj = null;
+        foreach(InteractableBase obj in InteractablesInRange)
+        {
+            float dist = Vector2.Distance(obj.transform.position, gameObject.transform.position);
+            if(dist < nearestDist)
+            {
+                nearestDist = dist;
+                nearestObj = obj;
+            }
+        }
+
+        //activate their interact() function
+        nearestObj.Interact();
+
+    }
+
     #endregion
 }
