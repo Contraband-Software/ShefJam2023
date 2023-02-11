@@ -382,7 +382,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71901f891916e694aaa3f7f051fc1e6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectType: 2
   spriteRend: {fileID: 920419396}
 --- !u!50 &920419394
 Rigidbody2D:
@@ -939,7 +938,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71901f891916e694aaa3f7f051fc1e6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectType: 2
   spriteRend: {fileID: 1585602444}
 --- !u!1001 &985605107258264156
 PrefabInstance:

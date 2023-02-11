@@ -138,7 +138,7 @@ namespace Architecture
             vertical = context.ReadValue<Vector2>().y;
 
             horizontal = context.ReadValue<Vector2>().x;
-            if (horizontal == 0) { }
+            if (horizontal == 0) { IdleAnimation(); }
             else if (horizontal < 0)
             {
                 facingDirection = FacingDirection.LEFT;
@@ -158,6 +158,7 @@ namespace Architecture
             if (context.performed && IsGrounded())
             {
                 rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+                IdleAnimation();
             }
 
             LeaveInteract();
@@ -296,7 +297,15 @@ namespace Architecture
         #region ANIMATION
         private void MoveAnimation()
         {
+            if (IsGrounded() && horizontal != 0)
+            {
+                animator.Play("Run");
+            }
+        }
 
+        private void IdleAnimation()
+        {
+            animator.Play("Idle");
         }
         #endregion
 
