@@ -24,7 +24,8 @@ namespace Managers
             WOOD
         }
 
-        [SerializeField, RequireNotNull] Tilemap blockMap;
+        [SerializeField, RequireNotNull] Tilemap buildingTileMap;
+        [SerializeField] List<Tilemap> proximityTileMaps;
         [SerializeField, RequireNotNull] Tilemap ghostMap;
 
         [SerializeField, RequireNotNull] Tile ghostBlock;
@@ -48,6 +49,7 @@ namespace Managers
         private void Update()
         {
             ghostMap.ClearAllTiles();
+            #region DEBUG
             //Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             //mouseWorldPos.z = 0f;
 
@@ -72,6 +74,7 @@ namespace Managers
             //    //    "right: " + blockMap.GetTile<TileBase>(right)?.name
             //    //);
             //}
+            #endregion
         }
         #endregion
 
@@ -83,7 +86,10 @@ namespace Managers
         /// <returns></returns>
         private bool IsTileOccupied(Vector3Int tileMapPosition)
         {
-            if (blockMap.GetTile<TileBase>(tileMapPosition) != null) { return true; }
+            foreach (Tilemap tmap in proximityTileMaps)
+            {
+                if (tmap.GetTile<TileBase>(tileMapPosition) != null) { return true; }
+            }
             return false;
         }
 
@@ -130,36 +136,36 @@ namespace Managers
 
         private void DestroyLogic(Vector3Int tile)
         {
-            if (blockMap.GetTile<TileBase>(tile + new Vector3Int(0, 1, 0)) &&
-                blockMap.GetTile<TileBase>(tile - new Vector3Int(0, 1, 0))) 
+            if (buildingTileMap.GetTile<TileBase>(tile + new Vector3Int(0, 1, 0)) &&
+                buildingTileMap.GetTile<TileBase>(tile - new Vector3Int(0, 1, 0))) 
             {
                 ExecuteDestroy(tile + new Vector3Int(0, 1, 0), tile - new Vector3Int(0, 1, 0));
             }
-            else if (blockMap.GetTile<TileBase>(tile + new Vector3Int(1, 0, 0)) &&
-                blockMap.GetTile<TileBase>(tile - new Vector3Int(1, 0, 0)))
+            else if (buildingTileMap.GetTile<TileBase>(tile + new Vector3Int(1, 0, 0)) &&
+                buildingTileMap.GetTile<TileBase>(tile - new Vector3Int(1, 0, 0)))
             {
                 ExecuteDestroy(tile + new Vector3Int(1, 0, 0), tile - new Vector3Int(1, 0, 0));
             }
-            else if (blockMap.GetTile<TileBase>(tile + new Vector3Int(0, 1, 0)) &&
-                     blockMap.GetTile<TileBase>(tile - new Vector3Int(1, 0, 0))
+            else if (buildingTileMap.GetTile<TileBase>(tile + new Vector3Int(0, 1, 0)) &&
+                     buildingTileMap.GetTile<TileBase>(tile - new Vector3Int(1, 0, 0))
             )
             {
                 ExecuteDestroy(tile + new Vector3Int(0, 1, 0), tile - new Vector3Int(1, 0, 0));
             }
-            else if (blockMap.GetTile<TileBase>(tile + new Vector3Int(0, 1, 0)) &&
-                     blockMap.GetTile<TileBase>(tile + new Vector3Int(1, 0, 0))
+            else if (buildingTileMap.GetTile<TileBase>(tile + new Vector3Int(0, 1, 0)) &&
+                     buildingTileMap.GetTile<TileBase>(tile + new Vector3Int(1, 0, 0))
             )
             {
                 ExecuteDestroy(tile + new Vector3Int(0, 1, 0), tile + new Vector3Int(1, 0, 0));
             }
-            else if (blockMap.GetTile<TileBase>(tile - new Vector3Int(0, 1, 0)) &&
-                     blockMap.GetTile<TileBase>(tile + new Vector3Int(1, 0, 0))
+            else if (buildingTileMap.GetTile<TileBase>(tile - new Vector3Int(0, 1, 0)) &&
+                     buildingTileMap.GetTile<TileBase>(tile + new Vector3Int(1, 0, 0))
             )
             {
                 ExecuteDestroy(tile - new Vector3Int(0, 1, 0), tile + new Vector3Int(1, 0, 0));
             }
-            else if (blockMap.GetTile<TileBase>(tile - new Vector3Int(0, 1, 0)) &&
-                     blockMap.GetTile<TileBase>(tile - new Vector3Int(1, 0, 0))
+            else if (buildingTileMap.GetTile<TileBase>(tile - new Vector3Int(0, 1, 0)) &&
+                     buildingTileMap.GetTile<TileBase>(tile - new Vector3Int(1, 0, 0))
             )
             {
                 ExecuteDestroy(tile - new Vector3Int(0, 1, 0), tile - new Vector3Int(1, 0, 0));
@@ -168,13 +174,13 @@ namespace Managers
 
         private void ExecuteDestroy(Vector3Int tile1, Vector3Int tile2)
         {
-            TileMapSplitCounter splitCounter = new TileMapSplitCounter(blockMap, tile1, tile2);
+            TileMapSplitCounter splitCounter = new TileMapSplitCounter(buildingTileMap, tile1, tile2);
             List<Vector3Int> tilesToDestroy = splitCounter.Resolve();
             if (tilesToDestroy != null)
             {
                 foreach (Vector3Int tile3 in tilesToDestroy)
                 {
-                    blockMap.SetTile(tile3, null);
+                    buildingTileMap.SetTile(tile3, null);
                 }
             }
         }
@@ -206,16 +212,28 @@ namespace Managers
             {
                 for (int x = -1; x < 2; x++)
                 {
-                    if (blockMap.GetTile<TileBase>(tilePos + new Vector3Int(x, y, 0)) != null)
+                    if (y == -1 || y == 1)
                     {
-                        surroundings++;
+                        if (x == -1 || x == 1)
+                        {
+                            continue;
+                        }
+                    }
+
+                    foreach (Tilemap tmap in proximityTileMaps)
+                    {
+                        if (tmap.GetTile<TileBase>(tilePos + new Vector3Int(x, y, 0)) != null)
+                        {
+                            surroundings++;
+                            break;
+                        }
                     }
                 }
             }
 
             if (!IsTileOccupied(tilePos) && surroundings >= 1)
             {
-                blockMap.SetTile(tilePos, GetTileReference(block));
+                buildingTileMap.SetTile(tilePos, GetTileReference(block));
                 return true;
             }
 
@@ -229,8 +247,13 @@ namespace Managers
         public void DestroyBlock(Vector2 worldPosition)
         {
             Vector3Int tilePos = tileMapGrid.WorldToCell(worldPosition);
-            blockMap.SetTile(tilePos, null);
+            buildingTileMap.SetTile(tilePos, null);
             DestroyLogic(tilePos);
+        }
+
+        public bool CheckOccupancy(Vector2 worldPosition)
+        {
+            return IsTileOccupied(tileMapGrid.WorldToCell(worldPosition));
         }
         #endregion
     }

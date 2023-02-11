@@ -38,7 +38,7 @@ namespace Architecture
         private List<InteractableBase> InteractablesInRange = new List<InteractableBase>();
         private Rigidbody2D rb;
         private FacingDirection facingDirection = FacingDirection.RIGHT;
-        private State playerState = State.HOLDING_NOTHING;
+        private State playerState = State.HOLDING_BUILDING_BLOCK;
         private InteractableBase currentInteraction;
         private float horizontal;
         private float vertical;
@@ -108,7 +108,8 @@ namespace Architecture
 
         private Vector3 GetBuildingOffset()
         {
-            return new Vector3((facingDirection == FacingDirection.RIGHT) ? 1 : -1, -1, 0);
+            int x = (facingDirection == FacingDirection.RIGHT) ? 1 : -1;
+            return new Vector3(x, (building.CheckOccupancy(new Vector2(transform.position.x + x * building.tileMapGrid.cellSize.x, transform.position.y - building.tileMapGrid.cellSize.y *2))) ? -1 : -2);
         }
 
         private void Update()
@@ -169,7 +170,7 @@ namespace Architecture
                         InteractWithNearestObject();
                         break;
                     case State.HOLDING_BUILDING_BLOCK:
-                        building.PlaceBlock(BuildingSystem.BlockType.WOOD, transform.position + new Vector3(GetBuildingOffset().x * building.tileMapGrid.cellSize.x, GetBuildingOffset().y * building.tileMapGrid.cellSize.y, 0));
+                        print(building.PlaceBlock(BuildingSystem.BlockType.WOOD, transform.position + new Vector3(GetBuildingOffset().x * building.tileMapGrid.cellSize.x, GetBuildingOffset().y * building.tileMapGrid.cellSize.y, 0)));
                         break;
                     case State.HOLDING_CANNON_BALL:
                         break;
