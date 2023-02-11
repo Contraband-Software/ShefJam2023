@@ -133,7 +133,7 @@ GameObject:
   - component: {fileID: 4873257201352963520}
   m_Layer: 0
   m_Name: BlockWorld
-  m_TagString: Untagged
+  m_TagString: BlockWorldManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
