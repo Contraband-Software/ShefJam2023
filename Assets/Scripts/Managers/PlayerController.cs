@@ -23,7 +23,8 @@ namespace Architecture
         {
             HOLDING_NOTHING,
             HOLDING_BUILDING_BLOCK,
-            HOLDING_CANNON_BALL
+            HOLDING_CANNON_BALL,
+            USING_STATION
         }
 
         #region REFERENCES
@@ -38,7 +39,8 @@ namespace Architecture
         private Rigidbody2D rb;
         private FacingDirection facingDirection = FacingDirection.RIGHT;
         private BuildingSystem building;
-        private State playerState = State.HOLDING_BUILDING_BLOCK;
+        private State playerState = State.HOLDING_NOTHING;
+        private InteractableBase currentInteraction;
         #endregion
 
         #region SETTINGS_VARIABLES
@@ -97,6 +99,7 @@ namespace Architecture
 
         private void ChangeState(State state)
         {
+            playerState = state;
             switch (state)
             {
                 case State.HOLDING_BUILDING_BLOCK:
@@ -130,10 +133,13 @@ namespace Architecture
             else if (horizontal < 0)
             {
                 facingDirection = FacingDirection.LEFT;
-            } else
+            }
+            else
             {
                 facingDirection = FacingDirection.RIGHT;
             }
+
+            LeaveInteract();
         }
 
         public void Jump(InputAction.CallbackContext context)
@@ -142,6 +148,8 @@ namespace Architecture
             {
                 rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
             }
+
+            LeaveInteract();
         }
 
         public void Interact(InputAction.CallbackContext context)
@@ -151,6 +159,7 @@ namespace Architecture
                 switch (playerState)
                 {
                     case State.HOLDING_NOTHING:
+                    case State.USING_STATION:
                         InteractWithNearestObject();
                         break;
                     case State.HOLDING_BUILDING_BLOCK:
@@ -215,12 +224,63 @@ namespace Architecture
                     nearestObj = obj;
                 }
             }
+            if(nearestObj != null)
+            {
+                currentInteraction = nearestObj;
 
-            //activate their interact() function
-            nearestObj?.Interact();
-
+                //activate OUR interaction behaviour
+                InteractWithObject(currentInteraction.objectType);
+            }
         }
 
+        #endregion
+
+        #region OBJECT_INTERACTIONS
+        private void InteractWithObject(InteractableBase.ObjectType objectType)
+        {
+            switch (objectType)
+            {
+                case InteractableBase.ObjectType.WHEEL:
+                case InteractableBase.ObjectType.CANNON:
+                    InteractWithCannon();
+                    break;
+
+                case InteractableBase.ObjectType.CANNONBALL:
+                    ChangeState(State.HOLDING_CANNON_BALL);
+                    break;
+
+                case InteractableBase.ObjectType.WOODBOX:
+                case InteractableBase.ObjectType.METALBOX:
+                    ChangeState(State.HOLDING_BUILDING_BLOCK);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void InteractWithCannon()
+        {
+            
+            if(playerState == State.HOLDING_NOTHING || currentInteraction.objectType == InteractableBase.ObjectType.CANNON)
+            {
+                ChangeState(State.USING_STATION);
+                currentInteraction.Interact();
+            }
+        }
+
+        /// <summary>
+        /// Uninteracts with current interactable
+        /// </summary>
+        private void LeaveInteract()
+        {
+            if(playerState == State.USING_STATION)
+            {
+                currentInteraction.LeaveInteract();
+                currentInteraction = null;
+                playerState = State.HOLDING_NOTHING;
+            }   
+        }
         #endregion
     }
 }

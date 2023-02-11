@@ -9,15 +9,26 @@ public class Cannon : InteractableBase
     public float upperAngle = 45f;
     public float lowerAngle = -45f;
     public float rotationSpeed = 10f;
+    public float powerSpeed = 1f;
+
+    [Header("References")]
+    [SerializeField] Transform powerBar;
 
     bool rotatingToUpperAngle = true;
     float currentRotation = 0f;
+
+    bool poweringUpwards = true;
+    float currentPower = 0f;
+
     IEnumerator aimAnimation;
+    IEnumerator powerAnimation;
 
     private void Start()
     {
         interactionCycle = 0;
         rotatingToUpperAngle = true;
+        currentPower = 0f;
+        powerBar.localScale = new Vector2(0f, powerBar.localScale.y);
 
     }
     /// <summary>
@@ -26,16 +37,47 @@ public class Cannon : InteractableBase
     public override void Interact()
     {
         interactionCycle++;
+        //CLICK TO AIM
         if (interactionCycle == 1)
         {
             aimAnimation = AngleSetStartAnimating();
             StartCoroutine(aimAnimation);
         }
+        //CLICK TO POWER SET
         if(interactionCycle == 2)
         {
             StopCoroutine(aimAnimation);
-            AngleSet();
+            powerAnimation = PowerSetStartAnimating();
+            StartCoroutine(powerAnimation);
+            
+        }
+        //FIRE
+        if(interactionCycle == 3)
+        {
+            StopCoroutine(powerAnimation);
+            //FIRE
+
+            currentPower = 0f;
+            powerBar.localScale = new Vector2(0f, powerBar.localScale.y);
+            poweringUpwards = true;
             interactionCycle = 0;
+        }
+    }
+
+    /// <summary>
+    /// Leaves cannon in its current state
+    /// </summary>
+    public override void LeaveInteract()
+    {
+        if(interactionCycle == 1)
+        {
+            StopCoroutine(aimAnimation);
+            interactionCycle--;
+        }
+        if(interactionCycle == 2)
+        {
+            StopCoroutine(powerAnimation);
+            interactionCycle--;
         }
     }
 
@@ -73,9 +115,32 @@ public class Cannon : InteractableBase
         }
     }
 
-    //Sets the cannon in place
-    private void AngleSet()
+    private IEnumerator PowerSetStartAnimating()
     {
-        
+        while (true)
+        {
+            if (poweringUpwards)
+            {
+                currentPower += powerSpeed * Time.deltaTime;
+                powerBar.localScale = new Vector2(currentPower, powerBar.localScale.y);
+
+                if (currentPower >= 0.99f)
+                {
+                    poweringUpwards = false;
+                }
+            }
+
+            if (!poweringUpwards)
+            {
+                currentPower -= powerSpeed * Time.deltaTime;
+                powerBar.localScale = new Vector2(currentPower, powerBar.localScale.y);
+
+                if (currentPower <= 0.01f)
+                {
+                    poweringUpwards = true;
+                }
+            }
+            yield return null;
+        }
     }
 }

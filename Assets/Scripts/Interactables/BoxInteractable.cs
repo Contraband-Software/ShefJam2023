@@ -10,4 +10,9 @@ public class BoxInteractable : InteractableBase
     {
         spriteRend.color = Color.green;
     }
+
+    public override void LeaveInteract()
+    {
+        
+    }
 }
