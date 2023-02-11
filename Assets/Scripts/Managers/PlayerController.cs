@@ -32,6 +32,10 @@ namespace Architecture
         [SerializeField] LayerMask groundLayer;
         [SerializeField] Transform groundCheck;
         [SerializeField] BuildingSystem building;
+
+        [Header("Animation")]
+        [SerializeField] Animator animator;
+        [SerializeField] SpriteRenderer spriteRend;
         #endregion
 
         #region ATTRIBUTES
@@ -138,10 +142,12 @@ namespace Architecture
             else if (horizontal < 0)
             {
                 facingDirection = FacingDirection.LEFT;
+                spriteRend.flipX = true;
             }
             else
             {
                 facingDirection = FacingDirection.RIGHT;
+                spriteRend.flipX = false;
             }
 
             LeaveInteract();
@@ -284,6 +290,13 @@ namespace Architecture
                 currentInteraction = null;
                 playerState = State.HOLDING_NOTHING;
             }   
+        }
+        #endregion
+
+        #region ANIMATION
+        private void MoveAnimation()
+        {
+
         }
         #endregion
 
