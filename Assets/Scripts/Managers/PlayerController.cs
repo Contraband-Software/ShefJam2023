@@ -121,8 +121,6 @@ namespace Architecture
             {
                 building.UpdateGhostBlock(transform.position, (int)GetBuildingOffset().x, (int)GetBuildingOffset().y);
             }
-
-            print(IsGrounded());
         }
 
         private void FixedUpdate()
