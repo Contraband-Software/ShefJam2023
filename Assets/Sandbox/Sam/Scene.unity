@@ -130,29 +130,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4873257201352963520, guid: ea1fb5165078c7a468cf641c81a72a8d, type: 3}
-      propertyPath: tiles.Array.data[0].tile.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4873257201352963520, guid: ea1fb5165078c7a468cf641c81a72a8d, type: 3}
-      propertyPath: tiles.Array.data[1].tile.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4873257201352963520, guid: ea1fb5165078c7a468cf641c81a72a8d, type: 3}
-      propertyPath: tiles.Array.data[0].tile.Array.data[0]
-      value: 
-      objectReference: {fileID: 11400000, guid: 6d6f2de02787e5c478e39288b54b80d4, type: 2}
-    - target: {fileID: 4873257201352963520, guid: ea1fb5165078c7a468cf641c81a72a8d, type: 3}
-      propertyPath: tiles.Array.data[1].tile.Array.data[0]
-      value: 
-      objectReference: {fileID: 11400000, guid: de2e7e93df121724bbde281439d3e84a, type: 2}
     - target: {fileID: 4873257201352963549, guid: ea1fb5165078c7a468cf641c81a72a8d, type: 3}
       propertyPath: m_Name
       value: BlockWorld
-      objectReference: {fileID: 0}
-    - target: {fileID: 4873257201352963549, guid: ea1fb5165078c7a468cf641c81a72a8d, type: 3}
-      propertyPath: m_TagString
-      value: BlockWorldManager
       objectReference: {fileID: 0}
     - target: {fileID: 4873257201352963551, guid: ea1fb5165078c7a468cf641c81a72a8d, type: 3}
       propertyPath: m_RootOrder
@@ -335,7 +315,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1540251680}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0, y: -5.15, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
