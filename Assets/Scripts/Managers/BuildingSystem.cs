@@ -33,7 +33,7 @@ namespace Managers
         public struct TileEntry
         {
             public BlockType type;
-            public Tile tile;
+            public List<Tile> tile;
         }
         [SerializeField] List<TileEntry> tiles;
 
@@ -99,11 +99,33 @@ namespace Managers
             {
                 if (tile.type == type)
                 {
-                    return tile.tile;
+                    return tile.tile[UnityEngine.Random.Range(0, tile.tile.Count)];
                 }
             }
 
             throw new ArgumentException("Tile type does not have an associated reference");
+        }
+
+        /// <summary>
+        /// Returns the block type for a tile
+        /// </summary>
+        /// <param name="tile"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        private BlockType GetTileType(Tile tile)
+        {
+            foreach (TileEntry tileEntry in tiles)
+            {
+                foreach (Tile tileVariant in tileEntry.tile)
+                {
+                    if (tileVariant == tile)
+                    {
+                        return tileEntry.type;
+                    }
+                }
+            }
+
+            throw new ArgumentException("Not a placeable block tile");
         }
 
         private void DestroyLogic(Vector3Int tile)
