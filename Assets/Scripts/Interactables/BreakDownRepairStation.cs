@@ -8,7 +8,7 @@ namespace Architecture
     [RequireComponent(typeof(BoxCollider2D), typeof(Rigidbody2D))]
     public class BreakDownRepairStation : InteractableBase
     {
-        public UnityEvent Destroyed { get; private set; } = new UnityEvent();
+        public Managers.GameManager.GameOverEventType Destroyed { get; private set; } = new Managers.GameManager.GameOverEventType();
 
         [Header("References")]
         [SerializeField] GameObject timeLeftSlider;
@@ -61,7 +61,7 @@ namespace Architecture
                 {
                     broken = false;
                     timeLeftSlider.SetActive(false);
-                    Destroyed.Invoke();
+                    Destroyed.Invoke(Managers.GameManager.GameOverReason.GENERATOR_DESTROYED);
                 }
             }
         }
