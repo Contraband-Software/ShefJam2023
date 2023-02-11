@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Managers;
-using UnityEngine.Playables;
+using UnityEngine.Tilemaps;
 
 namespace Architecture
 {
@@ -31,7 +31,7 @@ namespace Architecture
         [Header("Grounding")]
         [SerializeField] LayerMask groundLayer;
         [SerializeField] Transform groundCheck;
-
+        [SerializeField] Collider2D RealCollider;
         #endregion
 
         #region ATTRIBUTES
@@ -41,6 +41,8 @@ namespace Architecture
         private BuildingSystem building;
         private State playerState = State.HOLDING_NOTHING;
         private InteractableBase currentInteraction;
+        private float horizontal;
+        private float vertical;
         #endregion
 
         #region SETTINGS_VARIABLES
@@ -53,7 +55,6 @@ namespace Architecture
         [Header("Player Variables")]
         [SerializeField] float speed;
         [SerializeField] float jumpingPower;
-        private float horizontal;
         #endregion
 
         #region INITIALIZATION
@@ -114,6 +115,9 @@ namespace Architecture
 
         private void Update()
         {
+            //Platform logic
+            Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Platform"), vertical < 0 || rb.velocity.y > 0);
+
             if (playerState == State.HOLDING_BUILDING_BLOCK)
             {
                 building.UpdateGhostBlock(transform.position, (int)GetBuildingOffset().x, (int)GetBuildingOffset().y);
@@ -122,12 +126,15 @@ namespace Architecture
 
         private void FixedUpdate()
         {
-            rb.velocity = new Vector2(horizontal * speed, rb.velocity.y);
+            rb.velocity = new Vector2(horizontal * speed, rb.velocity.y + ((vertical < 0) ? vertical : 0));
+            rb.velocity -= new Vector2(0, rb.gravityScale / 100);
         }
 
         #region PLAYER_CONTROLS
         public void Move(InputAction.CallbackContext context)
         {
+            vertical = context.ReadValue<Vector2>().y;
+
             horizontal = context.ReadValue<Vector2>().x;
             if (horizontal == 0) { }
             else if (horizontal < 0)
