@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Architecture;
 
 public class Cannon : InteractableBase
 {
@@ -16,6 +17,9 @@ public class Cannon : InteractableBase
     [SerializeField] Transform powerBar;
     [SerializeField] GameObject projectile;
     [SerializeField] Transform projectileSpawnPos;
+    [SerializeField] Transform cannonPivot;
+
+    private bool interacting = false;
 
     private int interactionCycle = 0;
 
@@ -41,6 +45,8 @@ public class Cannon : InteractableBase
     /// </summary>
     public override void Interact()
     {
+        interacting = true;
+
         interactionCycle++;
         //CLICK TO AIM
         if (interactionCycle == 1)
@@ -75,6 +81,9 @@ public class Cannon : InteractableBase
     /// </summary>
     public override void LeaveInteract()
     {
+        if (!interacting) { return; }
+        interacting = false;
+
         if(interactionCycle == 1)
         {
             StopCoroutine(aimAnimation);
@@ -96,7 +105,7 @@ public class Cannon : InteractableBase
         {
             if (rotatingToUpperAngle)
             {
-                transform.Rotate(0f, 0f, rotationSpeed * Time.deltaTime, Space.Self);
+                cannonPivot.Rotate(0f, 0f, rotationSpeed * Time.deltaTime, Space.Self);
                 currentRotation += rotationSpeed * Time.deltaTime;
 
                 if (currentRotation > upperAngle)
@@ -108,7 +117,7 @@ public class Cannon : InteractableBase
 
             if (!rotatingToUpperAngle)
             {
-                transform.Rotate(0f, 0f, -rotationSpeed * Time.deltaTime, Space.Self);
+                cannonPivot.Rotate(0f, 0f, -rotationSpeed * Time.deltaTime, Space.Self);
                 currentRotation -= rotationSpeed * Time.deltaTime;
 
                 if (currentRotation < lowerAngle)
@@ -157,5 +166,16 @@ public class Cannon : InteractableBase
         Rigidbody2D projectileRb = projectileClone.GetComponent<Rigidbody2D>();
         projectileRb.gravityScale = 1f;
         projectileRb.AddForce(projectileClone.transform.right * cannonballPower, ForceMode2D.Impulse);
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.transform.root.CompareTag("Player"))
+        {
+            LeaveInteract();
+            PlayerController pCon;
+            pCon = collision.transform.gameObject.GetComponent<PlayerController>();
+            pCon.ClearCurrentInteraction();
+        }
     }
 }
