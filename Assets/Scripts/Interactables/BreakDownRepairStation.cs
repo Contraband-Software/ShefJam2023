@@ -5,20 +5,34 @@ using UnityEngine.Events;
 
 namespace Architecture
 {
+    [RequireComponent(typeof(BoxCollider2D), typeof(Rigidbody2D))]
     public class BreakDownRepairStation : InteractableBase
     {
         public UnityEvent Destroyed { get; private set; } = new UnityEvent();
+
+        [Header("References")]
+        [SerializeField] GameObject timeLeftSlider;
 
         [Header("Settings")]
         [SerializeField] int breakdownToLoss = 120;
 
         private bool broken = false;
         private float timeLeft;
+        private Vector3 originalScale;
+
+        private void Awake()
+        {
+            objectType = ObjectType.TURBINE;
+
+            originalScale = timeLeftSlider.transform.localScale;
+            timeLeftSlider.SetActive(false);
+        }
 
         public void OnCannonballHit()
         {
             broken = true;
             timeLeft = breakdownToLoss;
+            timeLeftSlider.SetActive(true);
         }
 
         public override void Interact()
@@ -26,6 +40,7 @@ namespace Architecture
             if (broken)
             {
                 broken = false;
+                timeLeftSlider.SetActive(false);
             }
         }
 
@@ -39,8 +54,15 @@ namespace Architecture
             if (broken)
             {
                 timeLeft -= Time.deltaTime;
-                broken = false;
-                Destroyed.Invoke();
+
+                timeLeftSlider.transform.localScale = new Vector3(Mathf.Lerp(originalScale.x, 0, 1 - timeLeft / breakdownToLoss), originalScale.y, originalScale.z);
+
+                if (timeLeft < 0)
+                {
+                    broken = false;
+                    timeLeftSlider.SetActive(false);
+                    Destroyed.Invoke();
+                }
             }
         }
     }

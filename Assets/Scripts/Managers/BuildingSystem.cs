@@ -155,38 +155,53 @@ namespace Managers
             throw new ArgumentException("Tile entry error");
         }
 
+
+        private Tile CheckMultipleOccupancy(Vector3Int area)
+        {
+            foreach (Tilemap tmap in proximityTileMaps)
+            {
+                Tile t = tmap.GetTile<Tile>(area);
+                if (t != null)
+                {
+                    return t;
+                }
+            }
+
+            return null;
+        }
+
         private void DestroyLogic(Vector3Int tile)
         {
-            if (buildingTileMap.GetTile<TileBase>(tile + new Vector3Int(0, 1, 0)) &&
-                buildingTileMap.GetTile<TileBase>(tile - new Vector3Int(0, 1, 0))) 
+            if (CheckMultipleOccupancy(tile + new Vector3Int(0, 1, 0)) &&
+                CheckMultipleOccupancy(tile - new Vector3Int(0, 1, 0))) 
             {
                 ExecuteDestroy(tile + new Vector3Int(0, 1, 0), tile - new Vector3Int(0, 1, 0));
             }
-            else if (buildingTileMap.GetTile<TileBase>(tile + new Vector3Int(1, 0, 0)) &&
-                buildingTileMap.GetTile<TileBase>(tile - new Vector3Int(1, 0, 0)))
+            else if (CheckMultipleOccupancy(tile + new Vector3Int(1, 0, 0)) &&
+                CheckMultipleOccupancy(tile - new Vector3Int(1, 0, 0)))
             {
                 ExecuteDestroy(tile + new Vector3Int(1, 0, 0), tile - new Vector3Int(1, 0, 0));
             }
-            else if (buildingTileMap.GetTile<TileBase>(tile + new Vector3Int(0, 1, 0)) &&
-                     buildingTileMap.GetTile<TileBase>(tile - new Vector3Int(1, 0, 0))
+            else if (CheckMultipleOccupancy(tile + new Vector3Int(0, 1, 0)) &&
+                     CheckMultipleOccupancy(tile - new Vector3Int(1, 0, 0))
             )
             {
                 ExecuteDestroy(tile + new Vector3Int(0, 1, 0), tile - new Vector3Int(1, 0, 0));
             }
-            else if (buildingTileMap.GetTile<TileBase>(tile + new Vector3Int(0, 1, 0)) &&
-                     buildingTileMap.GetTile<TileBase>(tile + new Vector3Int(1, 0, 0))
+            else if (CheckMultipleOccupancy(tile + new Vector3Int(0, 1, 0)) &&
+                     CheckMultipleOccupancy(tile + new Vector3Int(1, 0, 0))
             )
             {
                 ExecuteDestroy(tile + new Vector3Int(0, 1, 0), tile + new Vector3Int(1, 0, 0));
             }
-            else if (buildingTileMap.GetTile<TileBase>(tile - new Vector3Int(0, 1, 0)) &&
-                     buildingTileMap.GetTile<TileBase>(tile + new Vector3Int(1, 0, 0))
+            else if (CheckMultipleOccupancy(tile - new Vector3Int(0, 1, 0)) &&
+                     CheckMultipleOccupancy(tile + new Vector3Int(1, 0, 0))
             )
             {
                 ExecuteDestroy(tile - new Vector3Int(0, 1, 0), tile + new Vector3Int(1, 0, 0));
             }
-            else if (buildingTileMap.GetTile<TileBase>(tile - new Vector3Int(0, 1, 0)) &&
-                     buildingTileMap.GetTile<TileBase>(tile - new Vector3Int(1, 0, 0))
+            else if (CheckMultipleOccupancy(tile - new Vector3Int(0, 1, 0)) &&
+                     CheckMultipleOccupancy(tile - new Vector3Int(1, 0, 0))
             )
             {
                 ExecuteDestroy(tile - new Vector3Int(0, 1, 0), tile - new Vector3Int(1, 0, 0));
@@ -195,13 +210,16 @@ namespace Managers
 
         private void ExecuteDestroy(Vector3Int tile1, Vector3Int tile2)
         {
-            TileMapSplitCounter splitCounter = new TileMapSplitCounter(buildingTileMap, tile1, tile2);
+            TileMapSplitCounter splitCounter = new TileMapSplitCounter(proximityTileMaps, tile1, tile2);
             List<Vector3Int> tilesToDestroy = splitCounter.Resolve();
             if (tilesToDestroy != null)
             {
                 foreach (Vector3Int tile3 in tilesToDestroy)
                 {
-                    buildingTileMap.SetTile(tile3, null);
+                    foreach (Tilemap tmap in proximityTileMaps)
+                    {
+                        tmap.SetTile(tile3, null);
+                    }
                 }
             }
         }
@@ -268,11 +286,16 @@ namespace Managers
         public int DestroyBlock(Vector2 worldPosition)
         {
             Vector3Int tilePos = tileMapGrid.WorldToCell(worldPosition);
-            Tile tile = buildingTileMap.GetTile<Tile>(tilePos);
+            Tile tile = CheckMultipleOccupancy(tilePos);
             if (tile != null)
             {
                 int strength = GetTileStrength(GetTileType(tile));
-                buildingTileMap.SetTile(tilePos, null);
+
+                foreach (Tilemap tmap in proximityTileMaps)
+                {
+                    tmap.SetTile(tilePos, null);
+                }
+
                 DestroyLogic(tilePos);
                 return strength;
             }

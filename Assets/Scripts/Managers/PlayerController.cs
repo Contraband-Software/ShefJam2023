@@ -265,7 +265,11 @@ namespace Architecture
             {
                 case InteractableBase.ObjectType.WHEEL:
                 case InteractableBase.ObjectType.CANNON:
-                    InteractWithCannon();
+                    if (playerState == State.HOLDING_NOTHING || currentInteraction.GetObjectType() == InteractableBase.ObjectType.CANNON)
+                    {
+                        ChangeState(State.USING_STATION);
+                        currentInteraction.Interact();
+                    }
                     break;
 
                 case InteractableBase.ObjectType.CANNONBALL:
@@ -276,18 +280,12 @@ namespace Architecture
                 case InteractableBase.ObjectType.METALBOX:
                     ChangeState(State.HOLDING_BUILDING_BLOCK);
                     break;
-
+                case InteractableBase.ObjectType.TURBINE:
+                    ChangeState(State.USING_STATION);
+                    currentInteraction.Interact();
+                    break;
                 default:
                     break;
-            }
-        }
-
-        private void InteractWithCannon()
-        {
-            if (playerState == State.HOLDING_NOTHING || currentInteraction.GetObjectType() == InteractableBase.ObjectType.CANNON)
-            {
-                ChangeState(State.USING_STATION);
-                currentInteraction.Interact();
             }
         }
 

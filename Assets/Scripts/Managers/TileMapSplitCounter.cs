@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +10,13 @@ namespace Managers
 {
     class TileMapSplitCounter
     {
-        readonly Tilemap tilemap;
+        List<Tilemap> tilemap;
 
         List<List<Vector3Int>> visited;
 
         List<int> count;
 
-        public TileMapSplitCounter(Tilemap tilemap, Vector3Int tile1, Vector3Int tile2)
+        public TileMapSplitCounter(List<Tilemap> tilemap, Vector3Int tile1, Vector3Int tile2)
         {
             this.tilemap = tilemap;
 
@@ -65,6 +66,19 @@ namespace Managers
             return false;
         }
 
+        private bool CheckMultipleOccupancy(Vector3Int area)
+        {
+            foreach (Tilemap tmap in this.tilemap)
+            {
+                if (tmap.GetTile<Tile>(area) != null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private void GetNeighboringTiles(Vector3Int tile, int index)
         {
             visited[index].Add(tile);
@@ -76,7 +90,7 @@ namespace Managers
             Vector3Int up = tile + new Vector3Int(0, 1, 0);
             if (!CheckIfVisited(up, index))
             {
-                if (tilemap.GetTile<Tile>(up) != null)
+                if (CheckMultipleOccupancy(up))
                 {
                     surroundings.Add(up);
                     count[index]++;
@@ -86,7 +100,7 @@ namespace Managers
             Vector3Int down = tile - new Vector3Int(0, 1, 0);
             if (!CheckIfVisited(down, index))
             {
-                if (tilemap.GetTile<Tile>(down) != null)
+                if (CheckMultipleOccupancy(down))
                 {
                     surroundings.Add(down);
                     count[index]++;
@@ -96,7 +110,7 @@ namespace Managers
             Vector3Int left = tile - new Vector3Int(1, 0, 0);
             if (!CheckIfVisited(left, index))
             {
-                if (tilemap.GetTile<Tile>(left) != null)
+                if (CheckMultipleOccupancy(left))
                 {
                     surroundings.Add(left);
                     count[index]++;
@@ -106,7 +120,7 @@ namespace Managers
             Vector3Int right = tile + new Vector3Int(1, 0, 0);
             if (!CheckIfVisited(right, index))
             {
-                if (tilemap.GetTile<Tile>(right) != null)
+                if (CheckMultipleOccupancy(right))
                 {
                     surroundings.Add(right);
                     count[index]++;

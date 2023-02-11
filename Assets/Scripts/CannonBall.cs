@@ -45,7 +45,7 @@ namespace Architecture
         {
             circleCollider.isTrigger = false;
             var ship = collider.gameObject.transform.parent.GetComponent<BuildingSystem>();
-            ship.DestroyBlock(transform.position);
+            ship?.DestroyBlock(transform.position);
         }
     }
 }
