@@ -120,16 +120,13 @@ namespace Architecture
             {
                 building.UpdateGhostBlock(transform.position, (int)GetBuildingOffset().x, (int)GetBuildingOffset().y);
             }
+
+            print(IsGrounded());
         }
 
         private void FixedUpdate()
         {
             rb.velocity = new Vector2(horizontal * speed, rb.velocity.y + ((vertical < 0) ? vertical : 0));
-
-            if (!IsGrounded())
-            {
-                rb.velocity -= new Vector2(0, rb.gravityScale / 100);
-            }
         }
 
         #region PLAYER_CONTROLS
