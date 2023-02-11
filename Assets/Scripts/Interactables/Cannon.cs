@@ -4,15 +4,20 @@ using UnityEngine;
 
 public class Cannon : InteractableBase
 {
-
-    private int interactionCycle = 0;
-    public float upperAngle = 45f;
-    public float lowerAngle = -45f;
-    public float rotationSpeed = 10f;
-    public float powerSpeed = 1f;
+    
+    [Header("Settings")]
+    [SerializeField] float upperAngle = 45f;
+    [SerializeField] float lowerAngle = -45f;
+    [SerializeField] float rotationSpeed = 10f;
+    [SerializeField] float powerSpeed = 1f;
+    [SerializeField] float cannonballPower = 50f;
 
     [Header("References")]
     [SerializeField] Transform powerBar;
+    [SerializeField] GameObject projectile;
+    [SerializeField] Transform projectileSpawnPos;
+
+    private int interactionCycle = 0;
 
     bool rotatingToUpperAngle = true;
     float currentRotation = 0f;
@@ -56,6 +61,7 @@ public class Cannon : InteractableBase
         {
             StopCoroutine(powerAnimation);
             //FIRE
+            FireCannon();
 
             currentPower = 0f;
             powerBar.localScale = new Vector2(0f, powerBar.localScale.y);
@@ -142,5 +148,14 @@ public class Cannon : InteractableBase
             }
             yield return null;
         }
+    }
+
+    private void FireCannon()
+    {
+        GameObject projectileClone = Instantiate(projectile, projectileSpawnPos.position, projectileSpawnPos.rotation, null);
+        projectileClone.SetActive(true);
+        Rigidbody2D projectileRb = projectileClone.GetComponent<Rigidbody2D>();
+        projectileRb.gravityScale = 1f;
+        projectileRb.AddForce(projectileClone.transform.right * cannonballPower, ForceMode2D.Impulse);
     }
 }
