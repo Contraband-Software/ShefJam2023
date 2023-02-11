@@ -31,14 +31,13 @@ namespace Architecture
         [Header("Grounding")]
         [SerializeField] LayerMask groundLayer;
         [SerializeField] Transform groundCheck;
-        [SerializeField] Collider2D RealCollider;
+        [SerializeField] BuildingSystem building;
         #endregion
 
         #region ATTRIBUTES
         private List<InteractableBase> InteractablesInRange = new List<InteractableBase>();
         private Rigidbody2D rb;
         private FacingDirection facingDirection = FacingDirection.RIGHT;
-        private BuildingSystem building;
         private State playerState = State.HOLDING_NOTHING;
         private InteractableBase currentInteraction;
         private float horizontal;
@@ -61,7 +60,6 @@ namespace Architecture
         private void Start()
         {
             rb = GetComponent<Rigidbody2D>();
-            building = BuildingSystem.GetReference();
             SubscribeToInputHandler();
         }
         /// <summary>

@@ -130,10 +130,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2929732293876932791, guid: ea1fb5165078c7a468cf641c81a72a8d, type: 3}
-      propertyPath: m_Layer
-      value: 10
-      objectReference: {fileID: 0}
     - target: {fileID: 4873257201352963549, guid: ea1fb5165078c7a468cf641c81a72a8d, type: 3}
       propertyPath: m_Name
       value: BlockWorld
@@ -241,11 +237,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ff0307f4340d2f14e9f14536a3387620, type: 3}
---- !u!19719996 &582481360 stripped
-TilemapCollider2D:
-  m_CorrespondingSourceObject: {fileID: 8100473707455552358, guid: ea1fb5165078c7a468cf641c81a72a8d, type: 3}
-  m_PrefabInstance: {fileID: 235818428}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1489526074
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -429,13 +420,9 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 4712349155849501896, guid: a7426b66f8161c441b8f0f24e13d8b86, type: 3}
-      propertyPath: groundLayer.m_Bits
-      value: 1088
-      objectReference: {fileID: 0}
-    - target: {fileID: 4712349155849501897, guid: a7426b66f8161c441b8f0f24e13d8b86, type: 3}
-      propertyPath: m_Mass
-      value: 4.44
-      objectReference: {fileID: 0}
+      propertyPath: building
+      value: 
+      objectReference: {fileID: 1821236423}
     - target: {fileID: 4712349155849501901, guid: a7426b66f8161c441b8f0f24e13d8b86, type: 3}
       propertyPath: m_Name
       value: Player
@@ -484,9 +471,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5884009734375314641, guid: a7426b66f8161c441b8f0f24e13d8b86, type: 3}
-      propertyPath: c
-      value: 
-      objectReference: {fileID: 582481360}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a7426b66f8161c441b8f0f24e13d8b86, type: 3}
+--- !u!114 &1821236423 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4873257201352963520, guid: ea1fb5165078c7a468cf641c81a72a8d, type: 3}
+  m_PrefabInstance: {fileID: 235818428}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d221c50016aee64fa7fdc75b5330eb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
