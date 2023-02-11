@@ -289,5 +289,16 @@ namespace Architecture
             }   
         }
         #endregion
+
+        #region PUBLIC_INTERFACE
+        public void ClearCurrentInteraction()
+        {
+            currentInteraction = null;
+        }
+        public void ClearState()
+        {
+            playerState = State.HOLDING_NOTHING;
+        }
+        #endregion
     }
 }
