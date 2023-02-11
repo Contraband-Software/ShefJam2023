@@ -35,6 +35,8 @@ public class Cannon : InteractableBase
 
     private void Start()
     {
+        objectType = ObjectType.CANNON;
+
         interactionCycle = 0;
         rotatingToUpperAngle = true;
         currentPower = 0f;
@@ -46,6 +48,7 @@ public class Cannon : InteractableBase
     /// </summary>
     public override void Interact()
     {
+        print("INTERACTED WITH CANNON");
         interacting = true;
 
         interactionCycle++;

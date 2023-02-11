@@ -196,9 +196,9 @@ namespace Architecture
         /// <param name="collision"></param>
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.transform.root.CompareTag("InteractableObject"))
+            if (collision.transform.parent.CompareTag("InteractableObject"))
             {
-                InteractablesInRange.Add(collision.transform.root.GetComponent<InteractableBase>());
+                InteractablesInRange.Add(collision.transform.parent.GetComponent<InteractableBase>());
             }
         }
         /// <summary>
@@ -207,9 +207,9 @@ namespace Architecture
         /// <param name="collision"></param>
         private void OnTriggerExit2D(Collider2D collision)
         {
-            if (collision.transform.root.CompareTag("InteractableObject"))
+            if (collision.transform.parent.CompareTag("InteractableObject"))
             {
-                InteractablesInRange.Remove(collision.transform.root.GetComponent<InteractableBase>());
+                InteractablesInRange.Remove(collision.transform.parent.GetComponent<InteractableBase>());
             }
         }
 
@@ -241,7 +241,7 @@ namespace Architecture
                 currentInteraction = nearestObj;
 
                 //activate OUR interaction behaviour
-                InteractWithObject(currentInteraction.GetType());
+                InteractWithObject(currentInteraction.GetObjectType());
             }
         }
 
@@ -250,6 +250,7 @@ namespace Architecture
         #region OBJECT_INTERACTIONS
         private void InteractWithObject(InteractableBase.ObjectType objectType)
         {
+            print("InteractWithObject()");
             switch (objectType)
             {
                 case InteractableBase.ObjectType.WHEEL:
@@ -273,7 +274,9 @@ namespace Architecture
 
         private void InteractWithCannon()
         {
-            if (playerState == State.HOLDING_NOTHING || currentInteraction.GetType() == InteractableBase.ObjectType.CANNON)
+            print("trying to interact with cannon");
+
+            if (playerState == State.HOLDING_NOTHING || currentInteraction.GetObjectType() == InteractableBase.ObjectType.CANNON)
             {
                 ChangeState(State.USING_STATION);
                 currentInteraction.Interact();
