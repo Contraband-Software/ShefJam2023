@@ -19,6 +19,13 @@ namespace Architecture
             RIGHT
         }
 
+        public enum Motion
+        {
+            IDLE,
+            MOVING,
+            AIR
+        }
+
         public enum State
         {
             HOLDING_NOTHING,
@@ -42,6 +49,7 @@ namespace Architecture
         private List<InteractableBase> InteractablesInRange = new List<InteractableBase>();
         private Rigidbody2D rb;
         private FacingDirection facingDirection = FacingDirection.RIGHT;
+        private Motion playerMotion = Motion.IDLE;
         [SerializeField] State playerState = State.HOLDING_BUILDING_BLOCK;
         private InteractableBase currentInteraction;
         private float horizontal;
@@ -125,6 +133,8 @@ namespace Architecture
             {
                 building.UpdateGhostBlock(transform.position, (int)GetBuildingOffset().x, (int)GetBuildingOffset().y);
             }
+            MotionStateSwitch();
+            MoveAnimation();
         }
 
         private void FixedUpdate()
@@ -149,7 +159,7 @@ namespace Architecture
                 facingDirection = FacingDirection.RIGHT;
                 spriteRend.flipX = false;
             }
-
+           
             LeaveInteract();
         }
 
@@ -158,6 +168,7 @@ namespace Architecture
             if (context.performed && IsGrounded())
             {
                 rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+                playerMotion = Motion.AIR;
                 IdleAnimation();
             }
 
@@ -250,7 +261,6 @@ namespace Architecture
         #region OBJECT_INTERACTIONS
         private void InteractWithObject(InteractableBase.ObjectType objectType)
         {
-            print("InteractWithObject()");
             switch (objectType)
             {
                 case InteractableBase.ObjectType.WHEEL:
@@ -274,8 +284,6 @@ namespace Architecture
 
         private void InteractWithCannon()
         {
-            print("trying to interact with cannon");
-
             if (playerState == State.HOLDING_NOTHING || currentInteraction.GetObjectType() == InteractableBase.ObjectType.CANNON)
             {
                 ChangeState(State.USING_STATION);
@@ -298,11 +306,42 @@ namespace Architecture
         #endregion
 
         #region ANIMATION
+        /// <summary>
+        /// Checks if the player has landed after jumping
+        /// </summary>
+        private void MotionStateSwitch()
+        {
+
+            if (IsGrounded() && playerMotion == Motion.AIR)
+            {
+                playerMotion = Motion.IDLE;
+            }
+
+            if(IsGrounded() && rb.velocity.x == 0)
+            {
+                playerMotion = Motion.IDLE;
+            }
+
+            if (!IsGrounded())
+            {
+                playerMotion = Motion.AIR;
+            }
+
+            if(playerMotion != Motion.AIR && rb.velocity.x != 0)
+            {
+                playerMotion = Motion.MOVING;
+            }
+        }
         private void MoveAnimation()
         {
-            if (IsGrounded() && horizontal != 0)
+            if(playerMotion == Motion.MOVING)
             {
                 animator.Play("Run");
+            }
+            else
+            {
+                playerMotion = Motion.IDLE;
+                IdleAnimation();
             }
         }
 

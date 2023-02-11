@@ -48,7 +48,6 @@ public class Cannon : InteractableBase
     /// </summary>
     public override void Interact()
     {
-        print("INTERACTED WITH CANNON");
         interacting = true;
 
         interactionCycle++;
