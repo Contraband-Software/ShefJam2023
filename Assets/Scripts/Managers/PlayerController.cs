@@ -115,7 +115,7 @@ namespace Architecture
         private void Update()
         {
             //Platform logic
-            Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Platform"), vertical < 0 || rb.velocity.y > 0);
+            Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Platform"), vertical < 0 || rb.velocity.y > 0);
 
             if (playerState == State.HOLDING_BUILDING_BLOCK)
             {
