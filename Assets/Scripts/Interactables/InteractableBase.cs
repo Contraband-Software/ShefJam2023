@@ -11,7 +11,7 @@ public abstract class InteractableBase : MonoBehaviour
 
     public abstract void LeaveInteract();
 
-    public ObjectType GetType()
+    public ObjectType GetObjectType()
     {
         return objectType;
     }
