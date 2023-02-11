@@ -415,7 +415,7 @@ MonoBehaviour:
   objectType: 2
   upperAngle: 45
   lowerAngle: -45
-  rotationSpeed: 10
+  rotationSpeed: 13.54
 --- !u!1 &920419392
 GameObject:
   m_ObjectHideFlags: 0
