@@ -526,7 +526,15 @@ PrefabInstance:
       objectReference: {fileID: 1821236423}
     - target: {fileID: 4712349155849501896, guid: a7426b66f8161c441b8f0f24e13d8b86, type: 3}
       propertyPath: playerState
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4712349155849501898, guid: a7426b66f8161c441b8f0f24e13d8b86, type: 3}
+      propertyPath: m_Size.y
+      value: 1.691812
+      objectReference: {fileID: 0}
+    - target: {fileID: 4712349155849501898, guid: a7426b66f8161c441b8f0f24e13d8b86, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.09554553
       objectReference: {fileID: 0}
     - target: {fileID: 4712349155849501901, guid: a7426b66f8161c441b8f0f24e13d8b86, type: 3}
       propertyPath: m_Name

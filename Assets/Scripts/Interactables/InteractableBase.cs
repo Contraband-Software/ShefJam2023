@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class InteractableBase : MonoBehaviour
 {
     public enum ObjectType { CANNONBALL, CANNON, WHEEL, WOODBOX, METALBOX}
-    private ObjectType objectType;
+    protected ObjectType objectType;
 
     public abstract void Interact();
 
