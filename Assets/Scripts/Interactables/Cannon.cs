@@ -11,70 +11,64 @@ public class Cannon : InteractableBase
     public float rotationSpeed = 10f;
 
     bool rotatingToUpperAngle = true;
+    float currentRotation = 0f;
+    IEnumerator aimAnimation;
 
     private void Start()
     {
         interactionCycle = 0;
         rotatingToUpperAngle = true;
+
     }
     /// <summary>
     /// First interact is angle, second interact is power
     /// </summary>
     public override void Interact()
     {
-        if(interactionCycle == 0)
-        {
-            AngleSetStartAnimating();
-        }
-        if(interactionCycle == 1)
-        {
-            AngleSet();
-        }
-
         interactionCycle++;
+        if (interactionCycle == 1)
+        {
+            aimAnimation = AngleSetStartAnimating();
+            StartCoroutine(aimAnimation);
+        }
+        if(interactionCycle == 2)
+        {
+            StopCoroutine(aimAnimation);
+            AngleSet();
+            interactionCycle = 0;
+        }
     }
 
     /// <summary>
     /// Bounces between -45 and 45 degrees
     /// </summary>
-    private void AngleSetStartAnimating()
-    {
-        StartCoroutine(AngleSetStartAnimating_C());
-    }
-
-    private IEnumerator AngleSetStartAnimating_C()
+    private IEnumerator AngleSetStartAnimating()
     {
         while (true)
         {
-            print(transform.rotation.z * Mathf.Rad2Deg);
             if (rotatingToUpperAngle)
             {
-                print("rotating UP");
-                Vector3 rot = transform.rotation.eulerAngles;
-                rot.z += rotationSpeed * Time.deltaTime;
-                print(rot.z);
+                transform.Rotate(0f, 0f, rotationSpeed * Time.deltaTime, Space.Self);
+                currentRotation += rotationSpeed * Time.deltaTime;
 
-                if (rot.z >= upperAngle)
+                if (currentRotation > upperAngle)
                 {
                     rotatingToUpperAngle = false;
+                    currentRotation = upperAngle;
                 }
-                transform.rotation.SetEulerAngles(rot);
-
             }
 
             if (!rotatingToUpperAngle)
             {
-                print("rotating DOWN");
-                Vector3 rot = transform.rotation.eulerAngles;
-                rot.z += rotationSpeed * Time.deltaTime - 1f; 
+                transform.Rotate(0f, 0f, -rotationSpeed * Time.deltaTime, Space.Self);
+                currentRotation -= rotationSpeed * Time.deltaTime;
 
-                if (rot.z <= lowerAngle)
+                if (currentRotation < lowerAngle)
                 {
                     rotatingToUpperAngle = true;
+                    currentRotation = lowerAngle;
                 }
-                transform.rotation.SetEulerAngles(rot);
             }
-
             yield return null;
         }
     }
@@ -82,6 +76,6 @@ public class Cannon : InteractableBase
     //Sets the cannon in place
     private void AngleSet()
     {
-        StopCoroutine(AngleSetStartAnimating_C());
+        
     }
 }
