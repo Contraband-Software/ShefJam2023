@@ -162,7 +162,7 @@ public class Cannon : InteractableBase
 
     private void FireCannon()
     {
-        GameObject projectileClone = Instantiate(projectile, projectileSpawnPos.position, projectileSpawnPos.rotation, null);
+        GameObject projectileClone = Instantiate(projectile, projectileSpawnPos.position, projectileSpawnPos.rotation, transform);
         projectileClone.SetActive(true);
         Rigidbody2D projectileRb = projectileClone.GetComponent<Rigidbody2D>();
         projectileRb.gravityScale = 1f;

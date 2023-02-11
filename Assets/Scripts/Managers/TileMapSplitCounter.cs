@@ -31,9 +31,9 @@ namespace Managers
             }
 
             GetNeighboringTiles(tile1, 0);
-            Debug.Log("1: " + count[0]);
+            //Debug.Log("1: " + count[0]);
             GetNeighboringTiles(tile2, 1);
-            Debug.Log("2: " + count[1]);
+            //Debug.Log("2: " + count[1]);
         }
 
         public List<Vector3Int> Resolve()

@@ -38,7 +38,7 @@ namespace Architecture
         private List<InteractableBase> InteractablesInRange = new List<InteractableBase>();
         private Rigidbody2D rb;
         private FacingDirection facingDirection = FacingDirection.RIGHT;
-        private State playerState = State.HOLDING_BUILDING_BLOCK;
+        [SerializeField] State playerState = State.HOLDING_BUILDING_BLOCK;
         private InteractableBase currentInteraction;
         private float horizontal;
         private float vertical;
