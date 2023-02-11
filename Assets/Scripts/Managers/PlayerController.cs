@@ -234,7 +234,7 @@ namespace Architecture
                 currentInteraction = nearestObj;
 
                 //activate OUR interaction behaviour
-                InteractWithObject(currentInteraction.objectType);
+                InteractWithObject(currentInteraction.GetType());
             }
         }
 
@@ -266,7 +266,7 @@ namespace Architecture
 
         private void InteractWithCannon()
         {
-            if (playerState == State.HOLDING_NOTHING || currentInteraction.objectType == InteractableBase.ObjectType.CANNON)
+            if (playerState == State.HOLDING_NOTHING || currentInteraction.GetType() == InteractableBase.ObjectType.CANNON)
             {
                 ChangeState(State.USING_STATION);
                 currentInteraction.Interact();
