@@ -34,7 +34,9 @@ namespace Managers
         public struct TileEntry
         {
             public BlockType type;
-            public List<Tile> tile;
+            [Min(0)] public int strength;
+            public List<Tile> decorative;
+            public List<Tile> placeable;
         }
         [SerializeField] List<TileEntry> tiles;
 
@@ -99,13 +101,13 @@ namespace Managers
         /// <param name="type"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        private TileBase GetTileReference(BlockType type)
+        private TileBase GetRandomPlaceableVariant(BlockType type)
         {
             foreach (TileEntry tile in tiles)
             {
                 if (tile.type == type)
                 {
-                    return tile.tile[UnityEngine.Random.Range(0, tile.tile.Count)];
+                    return tile.placeable[UnityEngine.Random.Range(0, tile.placeable.Count)];
                 }
             }
 
@@ -122,7 +124,7 @@ namespace Managers
         {
             foreach (TileEntry tileEntry in tiles)
             {
-                foreach (Tile tileVariant in tileEntry.tile)
+                foreach (Tile tileVariant in tileEntry.placeable.Concat(tileEntry.decorative))
                 {
                     if (tileVariant == tile)
                     {
@@ -131,7 +133,26 @@ namespace Managers
                 }
             }
 
-            throw new ArgumentException("Not a placeable block tile");
+            throw new ArgumentException("Unknown block tile: " + tile.name);
+        }
+
+        /// <summary>
+        /// Returns the block type for a tile
+        /// </summary>
+        /// <param name="tile"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        private int GetTileStrength(BlockType type)
+        {
+            foreach (TileEntry tile in tiles)
+            {
+                if (tile.type == type)
+                {
+                    return tile.strength;
+                }
+            }
+
+            throw new ArgumentException("Tile entry error");
         }
 
         private void DestroyLogic(Vector3Int tile)
@@ -233,7 +254,7 @@ namespace Managers
 
             if (!IsTileOccupied(tilePos) && surroundings >= 1)
             {
-                buildingTileMap.SetTile(tilePos, GetTileReference(block));
+                buildingTileMap.SetTile(tilePos, GetRandomPlaceableVariant(block));
                 return true;
             }
 
@@ -244,11 +265,19 @@ namespace Managers
         /// Destroys a block at a coordinate if there is one present
         /// </summary>
         /// <param name="worldPosition"></param>
-        public void DestroyBlock(Vector2 worldPosition)
+        public int DestroyBlock(Vector2 worldPosition)
         {
             Vector3Int tilePos = tileMapGrid.WorldToCell(worldPosition);
-            buildingTileMap.SetTile(tilePos, null);
-            DestroyLogic(tilePos);
+            Tile tile = buildingTileMap.GetTile<Tile>(tilePos);
+            if (tile != null)
+            {
+                int strength = GetTileStrength(GetTileType(tile));
+                buildingTileMap.SetTile(tilePos, null);
+                DestroyLogic(tilePos);
+                return strength;
+            }
+
+            return 0;
         }
 
         public bool CheckOccupancy(Vector2 worldPosition)
