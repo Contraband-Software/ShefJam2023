@@ -215,8 +215,6 @@ namespace Architecture
         /// </summary>
         private void InteractWithNearestObject()
         {
-            print("attempt interact");
-
             //dont try interact if none in range
             if (InteractablesInRange.Count == 0)
             {
@@ -272,8 +270,6 @@ namespace Architecture
 
         private void InteractWithCannon()
         {
-            print("interact with cannon");
-
             if (playerState == State.HOLDING_NOTHING || currentInteraction.objectType == InteractableBase.ObjectType.CANNON)
             {
                 ChangeState(State.USING_STATION);

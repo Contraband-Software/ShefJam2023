@@ -11,7 +11,8 @@ public class Cannon : InteractableBase
     [SerializeField] float lowerAngle = -45f;
     [SerializeField] float rotationSpeed = 10f;
     [SerializeField] float powerSpeed = 1f;
-    [SerializeField] float cannonballPower = 50f;
+    [SerializeField] float baseCannonballPower = 10f;
+    [SerializeField] float maxCannonballPower = 50f;
 
     [Header("References")]
     [SerializeField] Transform powerBar;
@@ -45,7 +46,6 @@ public class Cannon : InteractableBase
     /// </summary>
     public override void Interact()
     {
-        print("INTERACTED WITH CANNON");
         interacting = true;
 
         interactionCycle++;
@@ -166,7 +166,8 @@ public class Cannon : InteractableBase
         projectileClone.SetActive(true);
         Rigidbody2D projectileRb = projectileClone.GetComponent<Rigidbody2D>();
         projectileRb.gravityScale = 1f;
-        projectileRb.AddForce(projectileClone.transform.right * cannonballPower, ForceMode2D.Impulse);
+        float power = baseCannonballPower + (currentPower * maxCannonballPower);
+        projectileRb.AddForce(projectileClone.transform.right * power, ForceMode2D.Impulse);
     }
 
     private void OnTriggerExit2D(Collider2D collision)
