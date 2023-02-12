@@ -123,5 +123,10 @@ namespace Managers
             // Now put gameOverMessage on a game over screen
             // perhaps show a restart button
         }
+
+        public void ReplayButton()
+        {
+            GameManager.GetReference().Restart();
+        }
     }
 }
