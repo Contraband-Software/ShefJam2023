@@ -130,6 +130,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1381265498247493042, guid: ea1fb5165078c7a468cf641c81a72a8d, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 4873257201352963549, guid: ea1fb5165078c7a468cf641c81a72a8d, type: 3}
       propertyPath: m_Name
       value: BlockWorld
@@ -1652,6 +1656,10 @@ PrefabInstance:
     - target: {fileID: 919788165556030845, guid: ea1fb5165078c7a468cf641c81a72a8d, type: 3}
       propertyPath: m_ColliderPaths.Array.data[0].m_ColliderPaths.Array.data[0].Array.data[68].Y
       value: -50000000
+      objectReference: {fileID: 0}
+    - target: {fileID: 1381265498247493042, guid: ea1fb5165078c7a468cf641c81a72a8d, type: 3}
+      propertyPath: m_Layer
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 2947705640719317113, guid: ea1fb5165078c7a468cf641c81a72a8d, type: 3}
       propertyPath: m_CompositePaths.m_Paths.Array.data[0].Array.data[0].x

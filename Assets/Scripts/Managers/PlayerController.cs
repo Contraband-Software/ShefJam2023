@@ -540,6 +540,12 @@ namespace Architecture
                 GameManager.GetReference().GameOverEvent.Invoke(GameManager.GameOverReason.PLAYER_FELL, playerNumber);
             }
         }
+
+        public void DeathViaCannonball()
+        {
+            GameManager.GetReference().GameOverEvent.Invoke(GameManager.GameOverReason.PLAYER_KILLED, playerNumber);
+        }
+        
         #endregion
     }
 }

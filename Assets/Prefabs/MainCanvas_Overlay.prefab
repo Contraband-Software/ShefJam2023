@@ -1360,7 +1360,7 @@ MonoBehaviour:
   winnerText: {fileID: 8644442350022553524}
   gameOverText: {fileID: 3614566729833967548}
   playerOneColour: {r: 0.3420257, g: 0.24270196, b: 0.764151, a: 1}
-  playerTwoColour: {r: 0.82745105, g: 0.10980393, b: 0.098039225, a: 0}
+  playerTwoColour: {r: 0.82745105, g: 0.10980393, b: 0.098039225, a: 1}
 --- !u!1 &3614566730608131888
 GameObject:
   m_ObjectHideFlags: 0

@@ -31,6 +31,10 @@ namespace Architecture
                     collision.gameObject.GetComponent<BreakDownRepairStation>()?.OnCannonballHit();
                     damage = 1000000;
                 }
+                else if(collision.gameObject.CompareTag("Player"))
+                {
+                    collision.gameObject.GetComponent<PlayerController>().DeathViaCannonball();
+                }
             } else
             {
                 Expire(collision);
