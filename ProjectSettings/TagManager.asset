@@ -8,6 +8,7 @@ TagManager:
   - BlockWorldManager
   - Platforms
   - DeathZone
+  - Cannonball
   layers:
   - Default
   - TransparentFX
