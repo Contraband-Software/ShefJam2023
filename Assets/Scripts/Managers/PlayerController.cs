@@ -192,7 +192,7 @@ namespace Architecture
                 {
                     case State.HOLDING_NOTHING:
                     case State.USING_STATION:
-                        InteractWithNearestObject();
+                        InteractWithObject(GetNearestInteractableObject());
                         break;
                     case State.HOLDING_BUILDING_BLOCK:
                         if(blocksLeft != 0)
@@ -248,14 +248,8 @@ namespace Architecture
         /// <summary>
         /// Calculates the object that is nearest to the player and interacts with it
         /// </summary>
-        private void InteractWithNearestObject()
+        private InteractableBase.ObjectType GetNearestInteractableObject()
         {
-            //dont try interact if none in range
-            if (InteractablesInRange.Count == 0)
-            {
-                return;
-            }
-
             //calculate closest interactable
             float nearestDist = Mathf.Infinity;
             InteractableBase nearestObj = null;
@@ -268,13 +262,17 @@ namespace Architecture
                     nearestObj = obj;
                 }
             }
-            if(nearestObj != null)
+
+            if (nearestObj != null)
             {
                 currentInteraction = nearestObj;
 
                 //activate OUR interaction behaviour
-                InteractWithObject(currentInteraction.GetObjectType());
+                return currentInteraction.GetObjectType();
             }
+
+            //dont try interact if none in range
+            return InteractableBase.ObjectType.NONE;
         }
 
         #endregion
@@ -301,6 +299,12 @@ namespace Architecture
                 case InteractableBase.ObjectType.METALBOX:
                     BoxInteractable boxInteraction = currentInteraction.GetComponent<BoxInteractable>();
                     if(playerState == State.HOLDING_NOTHING && !boxInteraction.IsEmpty())
+                    {
+                        EquipBlockOfType(boxInteraction.GetBlockType(), boxInteraction);
+                        ChangeState(State.HOLDING_BUILDING_BLOCK);
+                    }
+                    else if(playerState == State.HOLDING_BUILDING_BLOCK && holdingBlock == boxInteraction.GetBlockType()
+                        && !boxInteraction.IsEmpty())
                     {
                         EquipBlockOfType(boxInteraction.GetBlockType(), boxInteraction);
                         ChangeState(State.HOLDING_BUILDING_BLOCK);
@@ -341,9 +345,12 @@ namespace Architecture
             blocksLeft += increaseInBlocks;
             
             //INSTANTIATE BLOCK ONTO PLAYER
-            GameObject blockInstance = GameObject.Instantiate(boxInter.GetBlockInstance(), holdPoint.transform);
-            blockInstance.SetActive(true);
-            blockInstance.transform.localPosition = Vector3.zero;
+            if(holdPoint.transform.childCount == 0)
+            {
+                GameObject blockInstance = GameObject.Instantiate(boxInter.GetBlockInstance(), holdPoint.transform);
+                blockInstance.SetActive(true);
+                blockInstance.transform.localPosition = Vector3.zero;
+            }     
         }
 
         /// <summary>
