@@ -26,8 +26,10 @@ namespace Backend
 #else
         protected
 #endif
-            void MakeSingleton()
+        void MakeSingleton()
         {
+            transform.parent = null;
+
             DontDestroyOnLoad(gameObject);
 
             if (instance == null)
