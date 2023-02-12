@@ -7,7 +7,8 @@ using UnityEngine.Tilemaps;
 namespace Architecture
 {
     [
-        RequireComponent(typeof(CircleCollider2D))
+        RequireComponent(typeof(CircleCollider2D)),
+        DisallowMultipleComponent
     ]
     public class CannonBall : MonoBehaviour
     {

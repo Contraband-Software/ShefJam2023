@@ -2,24 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-public abstract class InteractableBase : MonoBehaviour
+namespace Architecture
 {
-    public enum ObjectType { CANNONBALL, TURBINE, CANNON, WHEEL, WOODBOX, METALBOX}
-    protected ObjectType objectType;
-    protected Managers.GameManager.PlayerIndex playerIndex = Managers.GameManager.PlayerIndex.NEITHER;
-
-    private void Awake()
+    [DisallowMultipleComponent]
+    public abstract class InteractableBase : MonoBehaviour
     {
-        playerIndex = transform.parent.GetComponent<Managers.PlayerShipController>().GetPlayerIndex();
-    }
+        public enum ObjectType { CANNONBALL, TURBINE, CANNON, WHEEL, WOODBOX, METALBOX }
+        protected ObjectType objectType;
+        protected Managers.GameManager.PlayerIndex playerIndex = Managers.GameManager.PlayerIndex.NEITHER;
 
-    public abstract void Interact();
+        private void Awake()
+        {
+            playerIndex = transform.parent.GetComponent<Managers.PlayerShipController>().GetPlayerIndex();
+        }
 
-    public abstract void LeaveInteract();
+        public abstract void Interact();
 
-    public ObjectType GetObjectType()
-    {
-        return objectType;
+        public abstract void LeaveInteract();
+
+        public ObjectType GetObjectType()
+        {
+            return objectType;
+        }
     }
 }

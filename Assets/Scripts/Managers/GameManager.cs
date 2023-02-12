@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Managers {
+    [DisallowMultipleComponent]
     public class GameManager : MonoBehaviour
     {
         public class GameOverEventType : UnityEngine.Events.UnityEvent<GameOverReason, PlayerIndex> { }
