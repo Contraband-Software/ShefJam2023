@@ -76,7 +76,15 @@ namespace Architecture
                     explosionPFX.Play();
                     broken = false;
                     timeLeftSlider.SetActive(false);
-                    Destroyed.Invoke(Managers.GameManager.GameOverReason.GENERATOR_DESTROYED, playerIndex);
+
+                    if(stationType == ObjectType.GENERATOR)
+                    {
+                        Destroyed.Invoke(Managers.GameManager.GameOverReason.GENERATOR_DESTROYED, playerIndex);
+                    }
+                    else if(stationType == ObjectType.TURBINE)
+                    {
+                        Destroyed.Invoke(Managers.GameManager.GameOverReason.TURBINE_DESTROYED, playerIndex);
+                    }
                 }
             }
         }
