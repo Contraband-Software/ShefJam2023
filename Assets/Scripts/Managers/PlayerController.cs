@@ -345,7 +345,6 @@ namespace Architecture
         #region OBJECT_INTERACTIONS
         private void InteractWithObject(InteractableBase.ObjectType objectType)
         {
-            print(objectType.ToString());
             switch (objectType)
             {
                 case InteractableBase.ObjectType.WHEEL:
@@ -399,9 +398,15 @@ namespace Architecture
         /// <param name="boxInter"></param>
         private void EquipBlockOfType(BuildingSystem.BlockType block, BoxInteractable boxInter)
         {
+            int blocksPickUpAltered = blocksPickUp;
+            if(block == BuildingSystem.BlockType.METAL)
+            {
+                blocksPickUpAltered = 1;
+            }
+
             holdingBlock = block;
 
-            int increaseInBlocks = Mathf.Clamp(blocksPickUp - blocksLeft, 0, boxInter.GetBlocksStored());
+            int increaseInBlocks = Mathf.Clamp(blocksPickUpAltered - blocksLeft, 0, boxInter.GetBlocksStored());
 
             boxInter.DecreaseBlocksStored(increaseInBlocks);
             blocksLeft += increaseInBlocks;
