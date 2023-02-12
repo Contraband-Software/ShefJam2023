@@ -14,6 +14,8 @@ namespace Architecture
 
         [Header("References")]
         [SerializeField] GameObject timeLeftSlider;
+        [SerializeField] ParticleSystem explosionPFX;
+        [SerializeField] ParticleSystem smokePFX;
 
         [Header("Settings")]
         [SerializeField] int breakdownToLoss = 120;
@@ -35,6 +37,7 @@ namespace Architecture
         {
             if (!broken)
             {
+                smokePFX.Play();
                 broken = true;
                 timeLeft = breakdownToLoss;
                 timeLeftSlider.SetActive(true);
@@ -46,6 +49,7 @@ namespace Architecture
         {
             if (broken)
             {
+                smokePFX.Stop();
                 broken = false;
                 timeLeftSlider.SetActive(false);
                 DamageToggleEvent.Invoke(objectType, playerIndex, false);
@@ -68,11 +72,18 @@ namespace Architecture
                 if (timeLeft < 0)
                 {
                     //blow up
+                    smokePFX.Stop();
+                    explosionPFX.Play();
                     broken = false;
                     timeLeftSlider.SetActive(false);
                     Destroyed.Invoke(Managers.GameManager.GameOverReason.GENERATOR_DESTROYED, playerIndex);
                 }
             }
+        }
+
+        public bool IsBroken()
+        {
+            return broken;
         }
     }
 }

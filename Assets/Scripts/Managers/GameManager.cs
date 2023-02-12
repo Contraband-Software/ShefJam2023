@@ -44,6 +44,7 @@ namespace Managers {
                     GameOverEvent.Invoke(reason, player);
                     break;
                 case State.PLAYING:
+                    Time.timeScale = 1f;
                     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                     break;
             }

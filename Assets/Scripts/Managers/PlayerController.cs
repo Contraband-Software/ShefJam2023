@@ -246,13 +246,29 @@ namespace Architecture
                         break;
                     case State.HOLDING_BUILDING_BLOCK:
 
-                        if (station != null &&
+                        //REPAIR
+                        if(station != null && holdingBlock == BuildingSystem.BlockType.METAL && blocksLeft > 0 &&
+                            (station.GetObjectType() == InteractableBase.ObjectType.GENERATOR
+                            || station.GetObjectType() == InteractableBase.ObjectType.TURBINE))
+                        {
+                            BreakDownRepairStation breakdown = station.GetComponent<BreakDownRepairStation>();
+                            if (breakdown.IsBroken())
+                            {
+                                breakdown.Interact();
+                                blocksLeft--;
+                            }
+                        }
+
+
+                        //TOP UP MATERIALS
+                        else if (station != null &&
                             (station.GetObjectType() == InteractableBase.ObjectType.WOODBOX ||
                             station.GetObjectType() == InteractableBase.ObjectType.METALBOX))
                         {
                             InteractWithObject(station.GetObjectType());
                         }
 
+                        //PLACE BLOCK
                         else if (blocksLeft != 0)
                         {
                             if (building.PlaceBlock(holdingBlock, transform.position + new Vector3(GetBuildingOffset().x * building.tileMapGrid.cellSize.x, GetBuildingOffset().y * building.tileMapGrid.cellSize.y, 0)))
