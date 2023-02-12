@@ -129,7 +129,7 @@ namespace Architecture
         private Vector3 GetBuildingOffset()
         {
             int x = (facingDirection == FacingDirection.RIGHT) ? 1 : -1;
-            return new Vector3(x, (building.CheckOccupancy(new Vector2(transform.position.x + x * building.tileMapGrid.cellSize.x, transform.position.y - building.tileMapGrid.cellSize.y *2))) ? -1 : -2);
+            return new Vector3(x, (building.CheckOccupancy(new Vector2(transform.position.x + x * building.tileMapGrid.cellSize.x, transform.position.y - building.tileMapGrid.cellSize.y))) ? 0 : -1);
         }
 
         private void Update()

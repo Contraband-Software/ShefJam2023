@@ -401,7 +401,7 @@ MonoBehaviour:
   spriteRend: {fileID: 4712349155849501902}
   holdPoint: {fileID: 5163183468006989591}
   blockText: {fileID: 7537039666971976287}
-  playerState: 1
+  playerState: 0
   playerControlType: 0
   speed: 10
   jumpingPower: 6.5
