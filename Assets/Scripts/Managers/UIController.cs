@@ -7,6 +7,12 @@ namespace Managers
 {
     public class UIController : MonoBehaviour
     {
+        [Header("Warnings")]
+        [SerializeField] GameObject leftGenerator;
+        [SerializeField] GameObject leftTurbine;
+        [SerializeField] GameObject rightGenerator;
+        [SerializeField] GameObject rightTurbine;
+
         private void Start()
         {
             GameManager.GetReference().GameOverEvent.AddListener(OnGameOver);
@@ -16,11 +22,53 @@ namespace Managers
             {
                 station.DamageToggleEvent.AddListener(StationDamageToggle);
             }
+
+            DisableAllStationWarnings();
+        }
+
+        private void DisableAllStationWarnings()
+        {
+            leftGenerator.SetActive(false);
+            leftTurbine.SetActive(false);
+            rightGenerator.SetActive(false);
+            rightTurbine.SetActive(false);
         }
 
         private void StationDamageToggle(Architecture.InteractableBase.ObjectType type, GameManager.PlayerIndex player, bool damaged)
         {
+            if(player == GameManager.PlayerIndex.ONE)
+            {
+                switch (type)
+                {
+                    case Architecture.InteractableBase.ObjectType.GENERATOR:
+                        leftGenerator.gameObject.SetActive(damaged);
+                        break;
 
+                    case Architecture.InteractableBase.ObjectType.TURBINE:
+                        leftTurbine.gameObject.SetActive(damaged);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            else if (player == GameManager.PlayerIndex.TWO)
+            {
+                switch (type)
+                {
+                    case Architecture.InteractableBase.ObjectType.GENERATOR:
+                        rightGenerator.gameObject.SetActive(damaged);
+                        break;
+
+                    case Architecture.InteractableBase.ObjectType.TURBINE:
+                        rightTurbine.gameObject.SetActive(damaged);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
         }
 
         private void OnGameOver(GameManager.GameOverReason reason, GameManager.PlayerIndex player)
