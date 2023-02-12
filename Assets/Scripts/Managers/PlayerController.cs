@@ -119,6 +119,8 @@ namespace Architecture
             MotionStateSwitch();
             UpdateBlockDisplay();
             MoveAnimation();
+
+            BuildingBlockHoldToDropTimeout();
         }
 
         private void FixedUpdate()
@@ -189,12 +191,46 @@ namespace Architecture
             }
         }
 
+        private float holdTime = 0.5f;
+        private float timeHoldStarted = 0f;
+        private bool holdingInteract = false;
+        private void BuildingBlockHoldToDropTimeout()
+        {
+            if(playerState == State.HOLDING_BUILDING_BLOCK && holdingInteract && Time.time - timeHoldStarted > holdTime)
+            {
+                print("DROP ITEM");
+                holdingInteract = false;
+                playerState = State.HOLDING_NOTHING;
+                //unparent, make into interactable object with text above it, when picked up holding object of type,
+                //clear blocksLeft
+            }
+
+        }
         public void Interact(InputAction.CallbackContext context)
         {
-            if (context.performed)
+            //HOLDING BLOCK, CHECK IF INTERACT KEY HELD DOWN TO DROP ITEM
+            if(playerState == State.HOLDING_BUILDING_BLOCK)
             {
+                if (context.started)
+                {
+                    print("hold started");
+
+                    timeHoldStarted = Time.time;
+                    holdingInteract = true;
+                }
+                if (context.canceled)
+                {
+                    holdingInteract = false;
+                }
+            }
+
+            //OTHERWISE NORMAL INTERACT ALWAYS
+            if (context.canceled)
+            {
+                holdingInteract = false;
+                print("TAPPED");
                 InteractableBase station = GetNearestInteractableObject();
-                if(station != null)
+                if (station != null)
                 {
                     currentInteraction = station;
                 }
@@ -206,29 +242,29 @@ namespace Architecture
                         if (station != null)
                         {
                             InteractWithObject(station.GetObjectType());
-                        }               
+                        }
                         break;
                     case State.HOLDING_BUILDING_BLOCK:
 
-                        if(station != null && 
-                            (station.GetObjectType() == InteractableBase.ObjectType.WOODBOX || 
+                        if (station != null &&
+                            (station.GetObjectType() == InteractableBase.ObjectType.WOODBOX ||
                             station.GetObjectType() == InteractableBase.ObjectType.METALBOX))
                         {
                             InteractWithObject(station.GetObjectType());
                         }
 
-                        else if(blocksLeft != 0)
+                        else if (blocksLeft != 0)
                         {
                             if (building.PlaceBlock(holdingBlock, transform.position + new Vector3(GetBuildingOffset().x * building.tileMapGrid.cellSize.x, GetBuildingOffset().y * building.tileMapGrid.cellSize.y, 0)))
                             {
                                 blocksLeft--;
-                                if(blocksLeft == 0)
+                                if (blocksLeft == 0)
                                 {
                                     playerState = State.HOLDING_NOTHING;
                                     RemoveHeldObject_Destroy();
                                 }
                             }
-                        }                     
+                        }
                         break;
 
                     case State.HOLDING_CANNON_BALL:
