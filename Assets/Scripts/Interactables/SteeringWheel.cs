@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.InputSystem;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 namespace Architecture
 {
@@ -56,6 +57,8 @@ namespace Architecture
                     break;
                 }
             }
+
+            originalScale = fuelSlider.transform.localScale;
         }
 
         private void Down(InputAction.CallbackContext context)
@@ -81,11 +84,18 @@ namespace Architecture
                 {
                     transform.parent.transform.Translate(new Vector3(0, vertical * Speed, 0));
                     player.Translate(new Vector3(0, vertical * Speed, 0));
-                    moveDelta += vertical * Speed;
+                    moveDelta += Mathf.Abs(vertical * Speed);
                 } else
                 {
-                    transform.parent.transform.position = new Vector3(transform.parent.transform.position.x, Mathf.Clamp(transform.parent.transform.position.y, originalY - MinHeightDelta, originalY + MaxHeightDelta), transform.parent.transform.position.z);
-                    player.transform.position = new Vector3(player.transform.position.x, Mathf.Clamp(player.transform.position.y, originalY - MinHeightDelta, originalY + MaxHeightDelta), player.transform.position.z);
+                    if (transform.position.y > originalY + MaxHeightDelta)
+                    {
+                        transform.parent.transform.position = new Vector3(transform.parent.transform.position.x, originalY - 1 + MaxHeightDelta, transform.parent.transform.position.z);
+                        player.transform.position = new Vector3(player.transform.position.x, originalY - 1 + MaxHeightDelta, player.transform.position.z);
+                    } else
+                    {
+                        transform.parent.transform.position = new Vector3(transform.parent.transform.position.x, originalY + 1 + MinHeightDelta, transform.parent.transform.position.z);
+                        player.transform.position = new Vector3(player.transform.position.x, originalY + 1 - MinHeightDelta, player.transform.position.z);
+                    }
                 }
             } else
             {
@@ -95,7 +105,7 @@ namespace Architecture
 
         private void Update()
         {
-            fuelSlider.transform.localScale = new Vector3(Mathf.Lerp(originalScale.x, 0, 1 - timeLeft / breakdownToLoss), originalScale.y, originalScale.z);
+            fuelSlider.transform.localScale = new Vector3(Mathf.Lerp(originalScale.x, 0, moveDelta / MaxMoveDelta), originalScale.y, originalScale.z);
         }
 
         public override void Interact()

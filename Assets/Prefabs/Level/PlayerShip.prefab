@@ -2719,6 +2719,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d019fa605c314b542b2fcc4cabdf0f81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fuelSlider: {fileID: 2108526302968615207}
   MinHeightDelta: 0.5
   MaxHeightDelta: 0.5
   Speed: 0.185

@@ -178,6 +178,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5582131647410852780, guid: ea1fb5165078c7a468cf641c81a72a8d, type: 3}
+      propertyPath: MaxMoveDelta
+      value: 8.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5582131647410852780, guid: ea1fb5165078c7a468cf641c81a72a8d, type: 3}
+      propertyPath: MaxHeightDelta
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5582131647410852780, guid: ea1fb5165078c7a468cf641c81a72a8d, type: 3}
+      propertyPath: MinHeightDelta
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ea1fb5165078c7a468cf641c81a72a8d, type: 3}
 --- !u!1001 &685776594
