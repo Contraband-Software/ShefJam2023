@@ -188,14 +188,31 @@ namespace Architecture
         {
             if (context.performed)
             {
+                InteractableBase station = GetNearestInteractableObject();
+                if(station != null)
+                {
+                    currentInteraction = station;
+                }
+
                 switch (playerState)
                 {
                     case State.HOLDING_NOTHING:
                     case State.USING_STATION:
-                        InteractWithObject(GetNearestInteractableObject());
+                        if (station != null)
+                        {
+                            InteractWithObject(station.GetObjectType());
+                        }               
                         break;
                     case State.HOLDING_BUILDING_BLOCK:
-                        if(blocksLeft != 0)
+
+                        if(station != null && 
+                            (station.GetObjectType() == InteractableBase.ObjectType.WOODBOX || 
+                            station.GetObjectType() == InteractableBase.ObjectType.METALBOX))
+                        {
+                            InteractWithObject(station.GetObjectType());
+                        }
+
+                        else if(blocksLeft != 0)
                         {
                             if (building.PlaceBlock(holdingBlock, transform.position + new Vector3(GetBuildingOffset().x * building.tileMapGrid.cellSize.x, GetBuildingOffset().y * building.tileMapGrid.cellSize.y, 0)))
                             {
@@ -248,7 +265,7 @@ namespace Architecture
         /// <summary>
         /// Calculates the object that is nearest to the player and interacts with it
         /// </summary>
-        private InteractableBase.ObjectType GetNearestInteractableObject()
+        private InteractableBase GetNearestInteractableObject()
         {
             //calculate closest interactable
             float nearestDist = Mathf.Infinity;
@@ -263,16 +280,7 @@ namespace Architecture
                 }
             }
 
-            if (nearestObj != null)
-            {
-                currentInteraction = nearestObj;
-
-                //activate OUR interaction behaviour
-                return currentInteraction.GetObjectType();
-            }
-
-            //dont try interact if none in range
-            return InteractableBase.ObjectType.NONE;
+            return nearestObj;
         }
 
         #endregion
@@ -331,15 +339,7 @@ namespace Architecture
         {
             holdingBlock = block;
 
-            int increaseInBlocks;
-            if(blocksPickUp > boxInter.GetBlocksStored())
-            {
-                increaseInBlocks = boxInter.GetBlocksStored() - blocksPickUp;
-            }
-            else
-            {
-                increaseInBlocks = blocksPickUp;
-            }
+            int increaseInBlocks = Mathf.Clamp(blocksPickUp - blocksLeft, 0, boxInter.GetBlocksStored());
 
             boxInter.DecreaseBlocksStored(increaseInBlocks);
             blocksLeft += increaseInBlocks;
