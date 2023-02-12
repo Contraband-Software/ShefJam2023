@@ -27,7 +27,7 @@ namespace Architecture
                     damage += ship.DestroyBlock(transform.position);
                 } else if (collision.gameObject.layer == LayerMask.NameToLayer("FailStations"))
                 {
-                    collision.gameObject.GetComponent<BreakDownRepairStation>().OnCannonballHit();
+                    collision.gameObject.GetComponent<BreakDownRepairStation>()?.OnCannonballHit();
                     damage = 1000000;
                 }
             } else

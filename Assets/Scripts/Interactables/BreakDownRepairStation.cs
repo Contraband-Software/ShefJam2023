@@ -20,7 +20,7 @@ namespace Architecture
         private float timeLeft;
         private Vector3 originalScale;
 
-        private void Awake()
+        private void Start()
         {
             objectType = ObjectType.TURBINE;
 
@@ -61,7 +61,7 @@ namespace Architecture
                 {
                     broken = false;
                     timeLeftSlider.SetActive(false);
-                    Destroyed.Invoke(Managers.GameManager.GameOverReason.GENERATOR_DESTROYED);
+                    Destroyed.Invoke(Managers.GameManager.GameOverReason.GENERATOR_DESTROYED, playerIndex);
                 }
             }
         }

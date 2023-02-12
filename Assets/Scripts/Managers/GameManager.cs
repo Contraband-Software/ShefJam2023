@@ -2,21 +2,53 @@ using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Managers {
     public class GameManager : MonoBehaviour
     {
-        public class GameOverEventType : UnityEngine.Events.UnityEvent<GameOverReason> { }
+        public class GameOverEventType : UnityEngine.Events.UnityEvent<GameOverReason, PlayerIndex> { }
+        public GameOverEventType GameOverEvent { get; private set; } = new GameOverEventType();
 
         public enum GameOverReason
         {
+            NONE,
             GENERATOR_DESTROYED,
             TURBINE_DESTROYED,
             PLAYER_KILLED,
             PLAYER_FELL
         }
 
-        public GameManager GetReference()
+        public enum PlayerIndex
+        {
+            ONE,
+            TWO,
+            NEITHER
+        }
+
+        public enum State
+        {
+            PLAYING,
+            OVER
+        }
+
+        public State GameState { get; private set; } = State.PLAYING;
+
+        private void SetState(State state, GameOverReason reason = GameOverReason.NONE, PlayerIndex player = PlayerIndex.NEITHER)
+        {
+            GameState = state;
+            switch (state)
+            {
+                case State.OVER:
+                    GameOverEvent.Invoke(reason, player);
+                    break;
+                case State.PLAYING:
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                    break;
+            }
+        }
+
+        public static GameManager GetReference()
         {
             return GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         }
@@ -31,9 +63,10 @@ namespace Managers {
             }
         }
 
-        public void GameOver(GameOverReason reason)
+        public void GameOver(GameOverReason reason, PlayerIndex player)
         {
-            print("Game over: " + reason.ToString());
+            SetState(State.OVER, reason, player);
+            print("Player " + player.ToString() + " lost due to: " + reason.ToString());
         }
     }
 }
