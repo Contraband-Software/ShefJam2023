@@ -8,6 +8,8 @@ namespace Architecture
     [RequireComponent(typeof(BoxCollider2D), typeof(Rigidbody2D))]
     public class BreakDownRepairStation : InteractableBase
     {
+        public class DamagedEventType : UnityEvent<ObjectType, Managers.GameManager.PlayerIndex, bool> { }
+        public DamagedEventType DamageToggleEvent { get; private set; } = new DamagedEventType();
         public Managers.GameManager.GameOverEventType Destroyed { get; private set; } = new Managers.GameManager.GameOverEventType();
 
         [Header("References")]
@@ -33,6 +35,7 @@ namespace Architecture
             broken = true;
             timeLeft = breakdownToLoss;
             timeLeftSlider.SetActive(true);
+            DamageToggleEvent.Invoke(objectType, playerIndex, true);
         }
 
         public override void Interact()
@@ -41,6 +44,7 @@ namespace Architecture
             {
                 broken = false;
                 timeLeftSlider.SetActive(false);
+                DamageToggleEvent.Invoke(objectType, playerIndex, false);
             }
         }
 
