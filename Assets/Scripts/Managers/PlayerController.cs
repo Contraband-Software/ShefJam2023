@@ -69,6 +69,10 @@ namespace Architecture
         [Space(15)]
         [Header("Settings")]
         [SerializeField] GameManager.PlayerIndex playerNumber = GameManager.PlayerIndex.ONE;
+        public GameManager.PlayerIndex GetPlayerIndex()
+        {
+            return playerNumber;
+        }
 
         [Header("Player Variables")]
         [SerializeField] float speed;

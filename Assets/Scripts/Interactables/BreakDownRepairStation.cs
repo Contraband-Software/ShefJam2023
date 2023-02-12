@@ -33,10 +33,13 @@ namespace Architecture
 
         public void OnCannonballHit()
         {
-            broken = true;
-            timeLeft = breakdownToLoss;
-            timeLeftSlider.SetActive(true);
-            DamageToggleEvent.Invoke(objectType, playerIndex, true);
+            if (!broken)
+            {
+                broken = true;
+                timeLeft = breakdownToLoss;
+                timeLeftSlider.SetActive(true);
+                DamageToggleEvent.Invoke(objectType, playerIndex, true);
+            }
         }
 
         public override void Interact()
