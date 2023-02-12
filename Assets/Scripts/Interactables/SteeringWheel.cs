@@ -134,7 +134,7 @@ namespace Architecture
 
         private void Update()
         {
-            fuelSlider.transform.localScale = new Vector3(Mathf.Lerp(originalScale.x, 0, moveDelta / MaxMoveDelta), originalScale.y, originalScale.z);
+            //fuelSlider.transform.localScale = new Vector3(Mathf.Lerp(originalScale.x, 0, moveDelta / MaxMoveDelta), originalScale.y, originalScale.z);
         }
 
         public override void Interact()

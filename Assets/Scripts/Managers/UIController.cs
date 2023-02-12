@@ -126,6 +126,7 @@ namespace Managers
 
         public void ReplayButton()
         {
+            print("REPLAYING");
             GameManager.GetReference().Restart();
         }
     }
