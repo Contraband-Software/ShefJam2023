@@ -1,15 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Managers
 {
     public class UIController : MonoBehaviour
     {
-
         private void Start()
         {
             GameManager.GetReference().GameOverEvent.AddListener(OnGameOver);
+
+            List<Architecture.BreakDownRepairStation> failStations = FindObjectsOfType<Architecture.BreakDownRepairStation>().ToList();
+            foreach (Architecture.BreakDownRepairStation station in failStations)
+            {
+                station.DamageToggleEvent.AddListener(StationDamageToggle);
+            }
+        }
+
+        private void StationDamageToggle(Architecture.InteractableBase.ObjectType type, GameManager.PlayerIndex player, bool damaged)
+        {
+
         }
 
         private void OnGameOver(GameManager.GameOverReason reason, GameManager.PlayerIndex player)

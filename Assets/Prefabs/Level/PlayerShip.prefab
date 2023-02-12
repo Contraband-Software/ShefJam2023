@@ -3508,6 +3508,14 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 3804399289416454457, guid: cd13e18d53a50b9418ac62a5655ed984, type: 3}
+      propertyPath: m_Radius
+      value: 0.47573256
+      objectReference: {fileID: 0}
+    - target: {fileID: 3804399289416454457, guid: cd13e18d53a50b9418ac62a5655ed984, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.0652411
+      objectReference: {fileID: 0}
     - target: {fileID: 4708673666733115537, guid: cd13e18d53a50b9418ac62a5655ed984, type: 3}
       propertyPath: m_SortingOrder
       value: 6
@@ -3526,6 +3534,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4873257201352963551}
     m_Modifications:
+    - target: {fileID: 1973105497734627871, guid: a016c5028254f6241839cc0f2f8376a2, type: 3}
+      propertyPath: m_Radius
+      value: 0.47189426
+      objectReference: {fileID: 0}
+    - target: {fileID: 1973105497734627871, guid: a016c5028254f6241839cc0f2f8376a2, type: 3}
+      propertyPath: m_Offset.x
+      value: 0.019188404
+      objectReference: {fileID: 0}
+    - target: {fileID: 1973105497734627871, guid: a016c5028254f6241839cc0f2f8376a2, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.080592155
+      objectReference: {fileID: 0}
     - target: {fileID: 1973105497834694178, guid: a016c5028254f6241839cc0f2f8376a2, type: 3}
       propertyPath: m_RootOrder
       value: 8
