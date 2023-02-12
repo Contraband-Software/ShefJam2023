@@ -762,6 +762,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeLeftSlider: {fileID: 2142349123808538132}
   breakdownToLoss: 7
+  stationType: 7
 --- !u!1 &4032708978858260089
 GameObject:
   m_ObjectHideFlags: 0
@@ -2514,6 +2515,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeLeftSlider: {fileID: 4096437861102704624}
   breakdownToLoss: 120
+  stationType: 2
 --- !u!50 &1051400538
 Rigidbody2D:
   serializedVersion: 4

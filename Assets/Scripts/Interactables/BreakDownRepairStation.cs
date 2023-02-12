@@ -17,6 +17,7 @@ namespace Architecture
 
         [Header("Settings")]
         [SerializeField] int breakdownToLoss = 120;
+        [SerializeField] ObjectType stationType;
 
         private bool broken = false;
         private float timeLeft;
@@ -24,7 +25,7 @@ namespace Architecture
 
         private void Start()
         {
-            objectType = ObjectType.TURBINE;
+            objectType = stationType;
 
             originalScale = timeLeftSlider.transform.localScale;
             timeLeftSlider.SetActive(false);

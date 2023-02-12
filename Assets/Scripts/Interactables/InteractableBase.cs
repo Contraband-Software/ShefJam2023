@@ -7,7 +7,7 @@ namespace Architecture
     [DisallowMultipleComponent]
     public abstract class InteractableBase : MonoBehaviour
     {
-        public enum ObjectType { NONE, CANNONBALL, TURBINE, CANNON, WHEEL, WOODBOX, METALBOX }
+        public enum ObjectType { NONE, CANNONBALL, TURBINE, CANNON, WHEEL, WOODBOX, METALBOX, GENERATOR }
         protected ObjectType objectType;
         protected Managers.GameManager.PlayerIndex playerIndex = Managers.GameManager.PlayerIndex.NEITHER;
 
