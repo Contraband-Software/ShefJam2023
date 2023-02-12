@@ -49,6 +49,11 @@ namespace Managers {
             }
         }
 
+        public void Restart()
+        {
+            SetState(State.PLAYING);
+        }
+
         public static GameManager GetReference()
         {
             return GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();

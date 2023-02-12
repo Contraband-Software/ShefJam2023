@@ -32,7 +32,8 @@ namespace Architecture
             HOLDING_NOTHING,
             HOLDING_BUILDING_BLOCK,
             HOLDING_CANNON_BALL,
-            USING_STATION
+            USING_STATION,
+            USING_WHEEL
         }
 
         #region REFERENCES
@@ -65,10 +66,9 @@ namespace Architecture
 
         #region SETTINGS_VARIABLES
 
-        private enum PlayerControlType { WASD, ARROWS };
         [Space(15)]
         [Header("Settings")]
-        [SerializeField] PlayerControlType playerControlType = new PlayerControlType { };
+        [SerializeField] GameManager.PlayerIndex playerNumber = GameManager.PlayerIndex.ONE;
 
         [Header("Player Variables")]
         [SerializeField] float speed;
@@ -76,60 +76,27 @@ namespace Architecture
         [SerializeField] int blocksPickUp = 5;
         #endregion
 
-        #region INITIALIZATION
+        #region UNITY
         private void Start()
         {
             rb = GetComponent<Rigidbody2D>();
-            SubscribeToInputHandler();
-        }
-        /// <summary>
-        /// Chooses whether to subscribe to WASD or ARROW events
-        /// </summary>
-        private void SubscribeToInputHandler()
-        {
-            if (playerControlType == PlayerControlType.WASD)
+
+            if (playerNumber == GameManager.PlayerIndex.ONE)
             {
-                SubscribeWASDEvents();
+                InputHandler.Instance.WASD_MoveEvent.AddListener(Move);
+                InputHandler.Instance.WASD_JumpEvent.AddListener(Jump);
+                InputHandler.Instance.WASD_InteractEvent.AddListener(Interact);
+            }
+            else if (playerNumber == GameManager.PlayerIndex.TWO)
+            {
+                InputHandler.Instance.ARROWS_MoveEvent.AddListener(Move);
+                InputHandler.Instance.ARROWS_JumpEvent.AddListener(Jump);
+                InputHandler.Instance.ARROWS_InteractEvent.AddListener(Interact);
             }
             else
             {
-                SubscribeARROWSEvents();
+                throw new System.ArgumentException("Player index must be set to one or two.");
             }
-        }
-        /// <summary>
-        /// Subscribes its controls to the WASD Events of the InputHandler
-        /// </summary>
-        private void SubscribeWASDEvents()
-        {
-            InputHandler.Instance.WASD_MoveEvent.AddListener(Move);
-            InputHandler.Instance.WASD_JumpEvent.AddListener(Jump);
-            InputHandler.Instance.WASD_InteractEvent.AddListener(Interact);
-        }
-        /// <summary>
-        /// Subscribes its controls to the ARROWS Events of the InputHandler
-        /// </summary>
-        private void SubscribeARROWSEvents()
-        {
-            InputHandler.Instance.ARROWS_MoveEvent.AddListener(Move);
-            InputHandler.Instance.ARROWS_JumpEvent.AddListener(Jump);
-            InputHandler.Instance.ARROWS_InteractEvent.AddListener(Interact);
-        }
-        #endregion
-
-        private void ChangeState(State state)
-        {
-            playerState = state;
-            switch (state)
-            {
-                case State.HOLDING_BUILDING_BLOCK:
-                    break;
-            }
-        }
-
-        private Vector3 GetBuildingOffset()
-        {
-            int x = (facingDirection == FacingDirection.RIGHT) ? 1 : -1;
-            return new Vector3(x, (building.CheckOccupancy(new Vector2(transform.position.x + x * building.tileMapGrid.cellSize.x, transform.position.y - building.tileMapGrid.cellSize.y))) ? 0 : -1);
         }
 
         private void Update()
@@ -150,11 +117,34 @@ namespace Architecture
         {
             rb.velocity = new Vector2(horizontal * speed, rb.velocity.y + ((vertical < 0) ? vertical : 0));
         }
+        #endregion
+
+        private void ChangeState(State state)
+        {
+            playerState = state;
+            switch (state)
+            {
+                case State.HOLDING_BUILDING_BLOCK:
+                    break;
+            }
+        }
+
+        private Vector3 GetBuildingOffset()
+        {
+            int x = (facingDirection == FacingDirection.RIGHT) ? 1 : -1;
+            return new Vector3(x, (building.CheckOccupancy(new Vector2(transform.position.x + x * building.tileMapGrid.cellSize.x, transform.position.y - building.tileMapGrid.cellSize.y))) ? 0 : -1);
+        }
 
         #region PLAYER_CONTROLS
         public void Move(InputAction.CallbackContext context)
         {
-            vertical = context.ReadValue<Vector2>().y;
+            if (playerState != State.USING_WHEEL)
+            {
+                vertical = context.ReadValue<Vector2>().y;
+            } else
+            {
+                vertical = 0;
+            }
 
             horizontal = context.ReadValue<Vector2>().x;
             if (horizontal == 0) { IdleAnimation(); }
@@ -168,20 +158,25 @@ namespace Architecture
                 facingDirection = FacingDirection.RIGHT;
                 spriteRend.flipX = false;
             }
-           
-            LeaveInteract();
+            
+            if (playerState != State.USING_WHEEL || (playerState == State.USING_WHEEL && vertical == 0 && horizontal != 0))
+            {
+                LeaveInteract();
+            }
         }
 
         public void Jump(InputAction.CallbackContext context)
         {
-            if (context.performed && IsGrounded())
+            if (playerState != State.USING_WHEEL)
             {
-                rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
-                playerMotion = Motion.AIR;
-                IdleAnimation();
+                if (context.performed && IsGrounded())
+                {
+                    rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+                    playerMotion = Motion.AIR;
+                    IdleAnimation();
+                }
+                LeaveInteract();
             }
-
-            LeaveInteract();
         }
 
         public void Interact(InputAction.CallbackContext context)
@@ -288,9 +283,14 @@ namespace Architecture
         #region OBJECT_INTERACTIONS
         private void InteractWithObject(InteractableBase.ObjectType objectType)
         {
+            print(objectType.ToString());
             switch (objectType)
             {
                 case InteractableBase.ObjectType.WHEEL:
+                    print("using");
+                    ChangeState(State.USING_WHEEL);
+                    currentInteraction.Interact();
+                    break;
                 case InteractableBase.ObjectType.CANNON:
                     if (playerState == State.HOLDING_NOTHING || currentInteraction.GetObjectType() == InteractableBase.ObjectType.CANNON)
                     {
@@ -367,7 +367,7 @@ namespace Architecture
         /// </summary>
         private void LeaveInteract()
         {
-            if(playerState == State.USING_STATION)
+            if(playerState == State.USING_STATION || playerState == State.USING_WHEEL)
             {
                 currentInteraction.LeaveInteract();
                 currentInteraction = null;
