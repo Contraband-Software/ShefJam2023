@@ -46,6 +46,10 @@ namespace Architecture
         [SerializeField] Animator animator;
         [SerializeField] SpriteRenderer spriteRend;
 
+        [Header("Better Movement")]
+        [SerializeField] float acceleration;
+        [SerializeField] float deceleration;
+
         [Header("Item Holding")]
         [SerializeField] Transform holdPoint;
         [SerializeField] TextMeshProUGUI blockText;
@@ -120,6 +124,8 @@ namespace Architecture
         private void FixedUpdate()
         {
             rb.velocity = new Vector2(horizontal * speed, rb.velocity.y + ((vertical < 0) ? vertical : 0));
+            MotionStateSwitch();
+            FasterJumping();
         }
         #endregion
 
@@ -398,6 +404,27 @@ namespace Architecture
         #endregion
 
         #region ANIMATION
+        private void FasterJumping()
+        {
+            if(playerMotion != Motion.AIR)
+            {
+                return;
+            }
+
+            float yVel = rb.velocity.y;
+            //going up
+            if (rb.velocity.y < 0)
+            {
+                yVel -= acceleration * Time.deltaTime;
+            }
+            //going down
+            else
+            {
+                yVel -= deceleration * Time.deltaTime;
+            }
+            rb.velocity = new Vector2(rb.velocity.x, yVel);
+        }
+
         /// <summary>
         /// Checks if the player has landed after jumping
         /// </summary>
@@ -409,7 +436,7 @@ namespace Architecture
                 playerMotion = Motion.IDLE;
             }
 
-            if(IsGrounded() && rb.velocity.x == 0)
+            if(IsGrounded() && horizontal == 0)
             {
                 playerMotion = Motion.IDLE;
             }
@@ -419,7 +446,7 @@ namespace Architecture
                 playerMotion = Motion.AIR;
             }
 
-            if(playerMotion != Motion.AIR && rb.velocity.x != 0)
+            if(playerMotion != Motion.AIR && horizontal != 0)
             {
                 playerMotion = Motion.MOVING;
             }
@@ -432,7 +459,6 @@ namespace Architecture
             }
             else
             {
-                playerMotion = Motion.IDLE;
                 IdleAnimation();
             }
         }

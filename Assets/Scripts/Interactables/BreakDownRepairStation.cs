@@ -67,6 +67,7 @@ namespace Architecture
 
                 if (timeLeft < 0)
                 {
+                    //blow up
                     broken = false;
                     timeLeftSlider.SetActive(false);
                     Destroyed.Invoke(Managers.GameManager.GameOverReason.GENERATOR_DESTROYED, playerIndex);

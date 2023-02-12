@@ -59,9 +59,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: pirate
   m_EditorClassIdentifier: 
-  hashCode: 344577366
+  hashCode: -14293925
   material: {fileID: 2747743351975756318}
-  materialHashCode: 1263262134
+  materialHashCode: 1194057371
   m_Version: 1.1.0
   m_SourceFontFileGUID: 7fd495d557a2663418cdf5fd1edaff98
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: 7fd495d557a2663418cdf5fd1edaff98, type: 3}
@@ -1943,7 +1943,7 @@ Material:
     - _OutlineSoftness: 0
     - _OutlineUVSpeedX: 0
     - _OutlineUVSpeedY: 0
-    - _OutlineWidth: 0
+    - _OutlineWidth: 0.376
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
     - _ScaleRatioA: 0.8333333

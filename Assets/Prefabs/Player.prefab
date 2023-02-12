@@ -60,7 +60,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 4.887074
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -394,17 +394,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   groundLayer:
     serializedVersion: 2
-    m_Bits: 1088
+    m_Bits: 5184
   groundCheck: {fileID: 4712349157296330595}
   building: {fileID: 0}
   animator: {fileID: 4712349156078598806}
   spriteRend: {fileID: 4712349155849501902}
+  acceleration: 90
+  deceleration: 90
   holdPoint: {fileID: 5163183468006989591}
   blockText: {fileID: 7537039666971976287}
   playerState: 0
-  playerControlType: 0
-  speed: 10
-  jumpingPower: 6.5
+  playerNumber: 0
+  speed: 16
+  jumpingPower: 30
   blocksPickUp: 5
 --- !u!95 &4712349156078598806
 Animator:

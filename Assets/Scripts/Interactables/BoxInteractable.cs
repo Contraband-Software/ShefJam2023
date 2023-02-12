@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Managers;
+using TMPro;
 
 namespace Architecture
 {
@@ -12,6 +13,7 @@ namespace Architecture
         private int blocksStored;
         [SerializeField] BuildingSystem.BlockType storedBlockType;
         [SerializeField] GameObject blockInstance;
+        [SerializeField] TextMeshProUGUI storageText;
 
         private void Start()
         {
@@ -25,6 +27,11 @@ namespace Architecture
                 objectType = ObjectType.METALBOX;
                 blocksStored = 8;
             }
+        }
+
+        private void Update()
+        {
+            storageText.text = blocksStored.ToString();
         }
 
         public override void Interact()
