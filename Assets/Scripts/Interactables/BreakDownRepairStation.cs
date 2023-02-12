@@ -37,6 +37,7 @@ namespace Architecture
         {
             if (!broken)
             {
+                Managers.SoundSystem.Instance.PlaySound("Hit2");
                 smokePFX.Play();
                 broken = true;
                 timeLeft = breakdownToLoss;

@@ -170,6 +170,8 @@ public class Cannon : InteractableBase
         projectileRb.gravityScale = 1f;
         float power = baseCannonballPower + (currentPower * maxCannonballPower);
         projectileRb.AddForce(projectileClone.transform.right * power, ForceMode2D.Impulse);
+
+        Managers.SoundSystem.Instance.PlaySound("Shoot");
     }
 
     private void OnTriggerExit2D(Collider2D collision)

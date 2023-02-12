@@ -17,6 +17,8 @@ namespace Architecture
 
         int damage = 0;
 
+        bool hitSomething = false;
+
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (!CheckExpired())
@@ -26,6 +28,12 @@ namespace Architecture
                     var ship = collision.gameObject.transform.parent.GetComponent<BuildingSystem>();
 
                     damage += ship.DestroyBlock(transform.position);
+
+                    if (!hitSomething)
+                    {
+                        hitSomething = true;
+                        Managers.SoundSystem.Instance.PlaySound("Hit1");
+                    }
                 } else if (collision.gameObject.layer == LayerMask.NameToLayer("FailStations"))
                 {
                     collision.gameObject.GetComponent<BreakDownRepairStation>()?.OnCannonballHit();
