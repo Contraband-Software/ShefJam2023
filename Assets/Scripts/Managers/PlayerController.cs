@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Managers;
 using UnityEngine.Tilemaps;
+using TMPro;
 
 namespace Architecture
 {
@@ -43,6 +44,10 @@ namespace Architecture
         [Header("Animation")]
         [SerializeField] Animator animator;
         [SerializeField] SpriteRenderer spriteRend;
+
+        [Header("Item Holding")]
+        [SerializeField] Transform holdPoint;
+        [SerializeField] TextMeshProUGUI blockText;
         #endregion
 
         #region ATTRIBUTES
@@ -50,6 +55,8 @@ namespace Architecture
         private Rigidbody2D rb;
         private FacingDirection facingDirection = FacingDirection.RIGHT;
         private Motion playerMotion = Motion.IDLE;
+        private BuildingSystem.BlockType holdingBlock;
+        private int blocksLeft = 0;
         [SerializeField] State playerState = State.HOLDING_BUILDING_BLOCK;
         private InteractableBase currentInteraction;
         private float horizontal;
@@ -66,6 +73,7 @@ namespace Architecture
         [Header("Player Variables")]
         [SerializeField] float speed;
         [SerializeField] float jumpingPower;
+        [SerializeField] int blocksPickUp = 5;
         #endregion
 
         #region INITIALIZATION
@@ -134,6 +142,7 @@ namespace Architecture
                 building.UpdateGhostBlock(transform.position, (int)GetBuildingOffset().x, (int)GetBuildingOffset().y);
             }
             MotionStateSwitch();
+            UpdateBlockDisplay();
             MoveAnimation();
         }
 
@@ -186,8 +195,20 @@ namespace Architecture
                         InteractWithNearestObject();
                         break;
                     case State.HOLDING_BUILDING_BLOCK:
-                        print(building.PlaceBlock(BuildingSystem.BlockType.WOOD, transform.position + new Vector3(GetBuildingOffset().x * building.tileMapGrid.cellSize.x, GetBuildingOffset().y * building.tileMapGrid.cellSize.y, 0)));
+                        if(blocksLeft != 0)
+                        {
+                            if (building.PlaceBlock(holdingBlock, transform.position + new Vector3(GetBuildingOffset().x * building.tileMapGrid.cellSize.x, GetBuildingOffset().y * building.tileMapGrid.cellSize.y, 0)))
+                            {
+                                blocksLeft--;
+                                if(blocksLeft == 0)
+                                {
+                                    playerState = State.HOLDING_NOTHING;
+                                    RemoveHeldObject_Destroy();
+                                }
+                            }
+                        }                     
                         break;
+
                     case State.HOLDING_CANNON_BALL:
                         break;
                 }
@@ -278,8 +299,14 @@ namespace Architecture
 
                 case InteractableBase.ObjectType.WOODBOX:
                 case InteractableBase.ObjectType.METALBOX:
-                    ChangeState(State.HOLDING_BUILDING_BLOCK);
+                    BoxInteractable boxInteraction = currentInteraction.GetComponent<BoxInteractable>();
+                    if(playerState == State.HOLDING_NOTHING && !boxInteraction.IsEmpty())
+                    {
+                        EquipBlockOfType(boxInteraction.GetBlockType(), boxInteraction);
+                        ChangeState(State.HOLDING_BUILDING_BLOCK);
+                    }
                     break;
+
                 case InteractableBase.ObjectType.TURBINE:
                     ChangeState(State.USING_STATION);
                     currentInteraction.Interact();
@@ -287,6 +314,45 @@ namespace Architecture
                 default:
                     break;
             }
+        }
+
+        /// <summary>
+        /// Decrease amount of blocks left in box by PICKUPAMOUNT
+        /// Change holding block enum to the type of box
+        /// Spawn block being held by player
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="boxInter"></param>
+        private void EquipBlockOfType(BuildingSystem.BlockType block, BoxInteractable boxInter)
+        {
+            holdingBlock = block;
+
+            int increaseInBlocks;
+            if(blocksPickUp > boxInter.GetBlocksStored())
+            {
+                increaseInBlocks = boxInter.GetBlocksStored() - blocksPickUp;
+            }
+            else
+            {
+                increaseInBlocks = blocksPickUp;
+            }
+
+            boxInter.DecreaseBlocksStored(increaseInBlocks);
+            blocksLeft += increaseInBlocks;
+            
+            //INSTANTIATE BLOCK ONTO PLAYER
+            GameObject blockInstance = GameObject.Instantiate(boxInter.GetBlockInstance(), holdPoint.transform);
+            blockInstance.SetActive(true);
+            blockInstance.transform.localPosition = Vector3.zero;
+        }
+
+        /// <summary>
+        /// Deletes the held object completely (as opposed to dropping it)
+        /// </summary>
+        public void RemoveHeldObject_Destroy()
+        {
+            if(holdPoint.transform.childCount == 0) { return; }
+            Destroy(holdPoint.transform.GetChild(0).gameObject);
         }
 
         /// <summary>
@@ -300,6 +366,23 @@ namespace Architecture
                 currentInteraction = null;
                 playerState = State.HOLDING_NOTHING;
             }   
+        }
+
+        private void UpdateBlockDisplay()
+        {
+            if(blocksLeft == 0)
+            {
+                blockText.text = string.Empty;
+            }
+            else
+            {
+                blockText.text = blocksLeft.ToString();
+            }
+        }
+
+        private void HighlightNearestInteractable()
+        {
+
         }
         #endregion
 
