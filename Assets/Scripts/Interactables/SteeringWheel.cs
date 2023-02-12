@@ -80,24 +80,53 @@ namespace Architecture
         {
             if (inUse && moveDelta < MaxMoveDelta)
             {
+
+                //GOING UP
+                if(vertical == 1)
+                {
+                    print("GOING UP");
+                    if(transform.position.y < originalY + MaxHeightDelta)
+                    {
+                        transform.parent.transform.Translate(new Vector3(0, vertical * Speed, 0));
+                        player.Translate(new Vector3(0, vertical * Speed, 0));
+                        //moveDelta += Mathf.Abs(vertical * Speed);
+                    }
+                }
+                //GOING DOWN
+                else if(vertical == -1)
+                {
+                    print("GOING DOWN");
+                    if (transform.position.y > originalY - MinHeightDelta)
+                    {
+                        transform.parent.transform.Translate(new Vector3(0, vertical * Speed, 0));
+                        player.Translate(new Vector3(0, vertical * Speed, 0));
+                        //moveDelta += Mathf.Abs(vertical * Speed);
+                    }
+                }
+
+                /*//MOVE WITHIN BOTH BOUNDS
                 if (transform.position.y < originalY + MaxHeightDelta && transform.position.y > originalY - MinHeightDelta)
                 {
                     transform.parent.transform.Translate(new Vector3(0, vertical * Speed, 0));
                     player.Translate(new Vector3(0, vertical * Speed, 0));
                     moveDelta += Mathf.Abs(vertical * Speed);
-                } else
+                } 
+                //MOVING WHEN AT A BOUND
+                else
                 {
-                    if (transform.position.y > originalY + MaxHeightDelta)
+                    if (transform.position.y >= originalY + MaxHeightDelta)
                     {
                         transform.parent.transform.position = new Vector3(transform.parent.transform.position.x, originalY - 1 + MaxHeightDelta, transform.parent.transform.position.z);
                         player.transform.position = new Vector3(player.transform.position.x, originalY - 1 + MaxHeightDelta, player.transform.position.z);
-                    } else
+                    } 
+                    else
                     {
                         transform.parent.transform.position = new Vector3(transform.parent.transform.position.x, originalY + 1 + MinHeightDelta, transform.parent.transform.position.z);
                         player.transform.position = new Vector3(player.transform.position.x, originalY + 1 - MinHeightDelta, player.transform.position.z);
                     }
-                }
-            } else
+                }*/
+            } 
+            else
             {
                 moveDelta -= Time.deltaTime * rechargeSpeed;
             }
