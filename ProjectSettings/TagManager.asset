@@ -7,6 +7,7 @@ TagManager:
   - InteractableObject
   - BlockWorldManager
   - Platforms
+  - DeathZone
   layers:
   - Default
   - TransparentFX
@@ -21,8 +22,8 @@ TagManager:
   - Platform
   - Player2
   - FailStations
-  - 
-  - 
+  - BARRIER
+  - KILLZONE
   - 
   - 
   - 

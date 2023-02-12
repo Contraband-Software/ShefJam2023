@@ -531,5 +531,15 @@ namespace Architecture
             playerState = State.HOLDING_NOTHING;
         }
         #endregion
+
+        #region DEATH
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (collision.gameObject.CompareTag("DeathZone"))
+            {
+                GameManager.GetReference().GameOverEvent.Invoke(GameManager.GameOverReason.PLAYER_FELL, playerNumber);
+            }
+        }
+        #endregion
     }
 }
