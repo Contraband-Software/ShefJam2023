@@ -201,6 +201,9 @@ namespace Architecture
                 print("DROP ITEM");
                 holdingInteract = false;
                 playerState = State.HOLDING_NOTHING;
+                //FOR NOW WILL DESTROY HELD OBJECT
+                blocksLeft = 0;
+                Destroy(holdPoint.transform.GetChild(0).gameObject);
                 //unparent, make into interactable object with text above it, when picked up holding object of type,
                 //clear blocksLeft
             }
@@ -213,8 +216,6 @@ namespace Architecture
             {
                 if (context.started)
                 {
-                    print("hold started");
-
                     timeHoldStarted = Time.time;
                     holdingInteract = true;
                 }
@@ -228,7 +229,6 @@ namespace Architecture
             if (context.canceled)
             {
                 holdingInteract = false;
-                print("TAPPED");
                 InteractableBase station = GetNearestInteractableObject();
                 if (station != null)
                 {
