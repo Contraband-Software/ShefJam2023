@@ -238,6 +238,11 @@ namespace Architecture
                 switch (playerState)
                 {
                     case State.HOLDING_NOTHING:
+                        if(station.GetObjectType() != InteractableBase.ObjectType.GENERATOR && station.GetObjectType() != InteractableBase.ObjectType.TURBINE)
+                        {
+                            InteractWithObject(station.GetObjectType());
+                        }
+                        break;
                     case State.USING_STATION:
                         if (station != null)
                         {
@@ -247,7 +252,7 @@ namespace Architecture
                     case State.HOLDING_BUILDING_BLOCK:
 
                         //REPAIR
-                        if(station != null && holdingBlock == BuildingSystem.BlockType.METAL && blocksLeft > 0 &&
+                        if(station != null && playerState == State.HOLDING_BUILDING_BLOCK && holdingBlock == BuildingSystem.BlockType.METAL && blocksLeft > 0 &&
                             (station.GetObjectType() == InteractableBase.ObjectType.GENERATOR
                             || station.GetObjectType() == InteractableBase.ObjectType.TURBINE))
                         {
@@ -256,6 +261,7 @@ namespace Architecture
                             {
                                 breakdown.Interact();
                                 blocksLeft--;
+                                CheckIfNoBlocksHeld();
                             }
                         }
 
@@ -274,18 +280,24 @@ namespace Architecture
                             if (building.PlaceBlock(holdingBlock, transform.position + new Vector3(GetBuildingOffset().x * building.tileMapGrid.cellSize.x, GetBuildingOffset().y * building.tileMapGrid.cellSize.y, 0)))
                             {
                                 blocksLeft--;
-                                if (blocksLeft == 0)
-                                {
-                                    playerState = State.HOLDING_NOTHING;
-                                    RemoveHeldObject_Destroy();
-                                }
+                                CheckIfNoBlocksHeld();
                             }
                         }
                         break;
-
-                    case State.HOLDING_CANNON_BALL:
-                        break;
                 }
+            }
+        }
+
+        private void CheckIfNoBlocksHeld()
+        {
+            if(playerState != State.HOLDING_BUILDING_BLOCK)
+            {
+                return;
+            }
+            if (blocksLeft == 0)
+            {
+                playerState = State.HOLDING_NOTHING;
+                RemoveHeldObject_Destroy();
             }
         }
 
