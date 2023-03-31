@@ -116,6 +116,7 @@ namespace Architecture
             {
                 building.UpdateGhostBlock(transform.position, (int)GetBuildingOffset().x, (int)GetBuildingOffset().y);
             }
+
             MotionStateSwitch();
             UpdateBlockDisplay();
             MoveAnimation();
